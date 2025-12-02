@@ -1,0 +1,11 @@
+node_modules
+frontend/node_modules
+.env
+dist
+frontend/dist
+.vercel
+.render
+npm-debug.log*
+.DS_Store
+frontend/.env
+frontend/.gitignore
