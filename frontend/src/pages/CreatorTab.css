@@ -213,7 +213,7 @@
     display: flex;
     flex-direction: column;
     border-left: 1px solid var(--border);
-    padding-left: 2rem;
+    padding: 1rem;
 }
 
 .top-bar {
@@ -274,7 +274,7 @@
 }
 
 .sketch-card {
-    background: #050a0c;
+    background: #0e3239;
     border: 1px solid var(--border);
     border-radius: 4px;
     padding: 1rem;

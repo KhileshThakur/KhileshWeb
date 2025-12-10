@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { motion, useScroll, useTransform, useSpring, useMotionValue, useMotionTemplate } from 'framer-motion';
-import { 
-  ArrowUpRight, Code2, Palette, Terminal, Cpu, Zap, 
-  Github, Twitter, Linkedin, Instagram, Globe, 
-  Music, Battery, Wifi, Lock, User, Mail,
-  LayoutGrid, Share2, Plus, MapPin, Cloud, Play
+import {
+  ArrowUpRight, Code2, Palette, Terminal, Cpu, Zap,
+  Github, Linkedin, Instagram, Globe,
+  Music, Battery, Wifi, Lock, User, Mail, LayoutDashboard,
+  LayoutGrid, Share2, Plus, MapPin, Cloud, Play, FileText
 } from 'lucide-react';
 
-import ProfileImg from '../assets/Profile.png';
+import * as PublicApi from '../api/public-api';
+import ProfileImg from '../assets/Profile.png'; 
 import './Hero.css'
 
 /* --- UTILS --- */
@@ -19,7 +22,7 @@ const DecryptText = ({ text, className }) => {
   const scramble = () => {
     let iteration = 0;
     const interval = setInterval(() => {
-      setDisplayText(prev => 
+      setDisplayText(prev =>
         text.split("").map((letter, index) => {
           if (index < iteration) return text[index];
           return chars[Math.floor(Math.random() * chars.length)];
@@ -51,6 +54,9 @@ const Clock = () => {
       <p className="clock-date font-mono uppercase">
         {time.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' })}
       </p>
+      <p className="clock-date font-mono uppercase">
+        WORKSTATION
+      </p>
     </div>
   );
 };
@@ -59,13 +65,13 @@ const Clock = () => {
 
 const LockScreen = () => {
   const { scrollY } = useScroll();
-  const y = useTransform(scrollY, [0, 800], [0, -1000]); 
+  const y = useTransform(scrollY, [0, 800], [0, -1000]);
   const opacity = useTransform(scrollY, [0, 600], [1, 0]);
   const scale = useTransform(scrollY, [0, 600], [1, 0.9]);
   const blur = useTransform(scrollY, [0, 600], ["0px", "10px"]);
 
   return (
-    <motion.div 
+    <motion.div
       style={{ y, opacity, scale, filter: `blur(${blur})` }}
       className="lock-screen z-50"
     >
@@ -80,11 +86,11 @@ const LockScreen = () => {
 
       <div className="relative w-full flex justify-center">
         <Clock />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] opacity-[0.05] pointer-events-none" 
-             style={{ backgroundColor: '#1DCD9F', filter: 'blur(120px)', borderRadius: '9999px' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] opacity-[0.05] pointer-events-none"
+          style={{ backgroundColor: '#1DCD9F', filter: 'blur(120px)', borderRadius: '9999px' }} />
       </div>
 
-      <motion.div 
+      <motion.div
         animate={{ y: [0, 10, 0] }}
         transition={{ repeat: Infinity, duration: 2 }}
         className="flex flex-col items-center gap-2"
@@ -106,8 +112,8 @@ const BentoCard = ({ children, className = "", color = "#1DCD9F", onClick, delay
     const height = rect.height;
     const xPct = (e.clientX - rect.left) / width - 0.5;
     const yPct = (e.clientY - rect.top) / height - 0.5;
-    x.set(yPct * 5); 
-    y.set(xPct * -5); 
+    x.set(yPct * 5);
+    y.set(xPct * -5);
   };
 
   const handleMouseLeave = () => {
@@ -131,8 +137,7 @@ const BentoCard = ({ children, className = "", color = "#1DCD9F", onClick, delay
       onClick={onClick}
       className={`bento-card group ${className}`}
     >
-      {/* 1. ANIMATED GRID BACKGROUND */}
-      <div 
+      <div
         className="grid-bg-reveal"
         style={{
           backgroundImage: `
@@ -141,18 +146,13 @@ const BentoCard = ({ children, className = "", color = "#1DCD9F", onClick, delay
           `
         }}
       >
-         <div className="grid-bg-mask"></div>
+        <div className="grid-bg-mask"></div>
       </div>
 
-      {/* 2. SOLID BORDER GLOW */}
-      <div 
-        className="border-glow"
-        style={{ color: color }}
-      />
-      
-      {/* 3. CORNER ACCENTS */}
+      <div className="border-glow" style={{ color: color }} />
+
       <div className="corner-plus">
-         <Plus size={10} style={{ color: color }} />
+        <Plus size={10} style={{ color: color }} />
       </div>
 
       <div className="relative z-10 h-full w-full">
@@ -165,24 +165,19 @@ const BentoCard = ({ children, className = "", color = "#1DCD9F", onClick, delay
 const MenuItem = ({ title, icon: Icon, sub, color, children }) => (
   <div className="menu-item">
     <div className="flex justify-between items-start">
-      <div 
-        className="icon-box" 
-        style={{ color: color }}
-      >
-        {/* Background fill on hover (handled by CSS targeting .icon-bg-fill) */}
+      <div className="icon-box" style={{ color: color }}>
         <div className="icon-bg-fill" style={{ backgroundColor: color }}></div>
         <Icon size={24} strokeWidth={2} className="relative z-10" />
       </div>
-      
       <ArrowUpRight className="arrow-icon" size={18} />
     </div>
-    
+
     {children && (
       <div style={{ marginTop: '1rem', marginBottom: '0.5rem', opacity: 0.5, transition: 'opacity 0.3s' }} className="group-hover:opacity-100">
         {children}
       </div>
     )}
-    
+
     <div style={{ marginTop: 'auto' }}>
       <h3 className="menu-title uppercase tracking-tighter" style={{ color: 'white' }}>
         <DecryptText text={title} />
@@ -196,228 +191,246 @@ const MenuItem = ({ title, icon: Icon, sub, color, children }) => (
 );
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+
+  const { data: profileData } = useQuery({
+    queryKey: ['profile'],
+    queryFn: PublicApi.getProfile
+  });
+
+  const profile = profileData?.data;
+  const header = profile?.header || {};
+  const manifesto = profile?.sections?.manifesto || {};
+  const resume = profile?.resume || {};
+  const avatarUrl = header.avatar || ProfileImg;
+
   return (
     <div className="dashboard-container">
-      
+
       {/* HEADER */}
       <div className="main-header">
         <div>
-           <div className="status-badge">
-             <span className="ping-dot">
-               <span className="absolute animate-ping" style={{ height: '100%', width: '100%', borderRadius: '9999px', backgroundColor: '#1DCD9F', opacity: 0.75 }}></span>
-               <span className="relative" style={{ height: '0.5rem', width: '0.5rem', borderRadius: '9999px', backgroundColor: '#1DCD9F' }}></span>
-             </span>
-             <span className="font-mono uppercase tracking-widest text-xs" style={{ color: '#1DCD9F' }}>System Online</span>
-           </div>
+          <div className="status-badge">
+            <span className="ping-dot">
+              <span className="absolute animate-ping" style={{ height: '100%', width: '100%', borderRadius: '9999px', backgroundColor: '#1DCD9F', opacity: 0.75 }}></span>
+              <span className="relative" style={{ height: '0.5rem', width: '0.5rem', borderRadius: '9999px', backgroundColor: '#1DCD9F' }}></span>
+            </span>
+            <span className="font-mono uppercase tracking-widest text-xs" style={{ color: '#1DCD9F' }}>System Online</span>
+          </div>
           <h2 className="main-title uppercase tracking-tighter text-white">
             Work<span>Station</span>
           </h2>
         </div>
         <div className="header-meta">
-           <div className="location-tag">
-              <MapPin size={12} color="#1DCD9F" />
-              <span className="font-mono uppercase">37.7749° N, 122.4194° W</span>
-           </div>
-           <p className="font-mono text-xs uppercase tracking-widest text-right" style={{ color: 'var(--text-gray)' }}>
-              Khilesh T. // V 4.5 <br /> 
-              Architecture & Design
-           </p>
+          <div className="location-tag">
+            <MapPin size={12} color="#1DCD9F" />
+            <span className="font-mono uppercase">37.7749° N, 122.4194° W</span>
+          </div>
+          <p className="font-mono text-xs uppercase tracking-widest text-right" style={{ color: 'var(--text-gray)' }}>
+            {header.name || "Khilesh T."} // V 4.5 <br />
+            {header.role || "Architecture & Design"}
+          </p>
         </div>
       </div>
 
-      {/* MOSAIC GRID LAYOUT */}
+      {/* GRID */}
       <div className="bento-grid">
-        
+
         {/* 1. PROFILE CARD */}
-        <BentoCard color="#1DCD9F" delay={0.1} className="col-span-2 row-span-3 flex flex-col p-0">
+        <BentoCard
+          onClick={() => navigate('/profile')}
+          color="#dcb313"
+          delay={0.1}
+          className="col-span-2 row-span-3 flex flex-col p-0 cursor-pointer"
+        >
           <div className="profile-img-container">
-            <img 
-              src={ProfileImg} 
-              alt="Profile" 
-              className="profile-img" 
-            />
+            <img src={avatarUrl} alt="Profile" className="profile-img" />
             <div className="profile-overlay"></div>
-            
-            {/* Status Pill on Image */}
             <div className="status-pill">
               <div className="animate-pulse" style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#1DCD9F' }}></div>
               <span className="uppercase font-bold tracking-wider text-white" style={{ fontSize: '10px' }}>Available for Hire</span>
             </div>
           </div>
-          
+
           <div className="profile-content">
             <div className="absolute top-0 right-0 pointer-events-none" style={{ width: '8rem', height: '8rem', backgroundColor: '#1DCD9F', opacity: 0.03, filter: 'blur(40px)', borderRadius: '50%' }}></div>
-            
+
             <div>
-              <h3 className="relative z-10 profile-title">Khilesh Thakur.</h3>
-              <p className="font-mono uppercase tracking-widest" style={{ color: '#1DCD9F', fontSize: '0.75rem', marginBottom: '1rem' }}>Full Stack Architect</p>
+              <h3 className="relative z-10 profile-title">{header.name || "Khilesh Thakur."}</h3>
+              <p className="font-mono uppercase tracking-widest" style={{ color: '#dcb313', fontSize: '0.75rem', marginBottom: '1rem' }}>
+                {header.role || "Full Stack Architect"}
+              </p>
               <p className="relative z-10" style={{ color: 'var(--text-gray)', fontSize: '0.875rem', lineHeight: 1.6, maxWidth: '28rem' }}>
-                Building digital products that live on the internet. Obsessed with micro-interactions and clean code.
+                {manifesto.paragraphs ? manifesto.paragraphs[0] : (
+                  <>A single workflow across multiple crafts :<br />structure in code, style in design, voice in writing, and curiosity in creation.</>
+                )}
               </p>
             </div>
-            
-            {/* Action Bar */}
+
+            {/* UPDATED Action Bar: Removed Bio, Added Resume Link */}
             <div className="profile-actions">
-                <div className="flex gap-4">
-                  <button className="action-btn uppercase">
-                     <User size={14} /> Bio
-                  </button>
-                  <button className="action-btn uppercase">
-                     <Share2 size={14} /> Share
-                  </button>
-                </div>
-                
-                {/* Skill Ticker */}
-                <div className="flex gap-3 font-mono uppercase" style={{ fontSize: '10px', color: '#4b5563' }}>
-                  <span>React</span><span>•</span><span>Node</span><span>•</span><span>WebGL</span>
-                </div>
+              <div className="flex gap-4">
+                <button 
+                  className="action-btn uppercase"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent card click
+                    if (resume.href && resume.href !== '#') {
+                      window.open(resume.href, '_blank');
+                    }
+                  }}
+                >
+                  <Share2 size={14} /> Resume
+                </button>
+              </div>
             </div>
           </div>
         </BentoCard>
 
-        {/* 2. DEVELOPER (With Code Snippet Detail) */}
-        <BentoCard color="#1DCD9F" delay={0.2} className="col-span-2 row-span-1">
-            <MenuItem title="Developer" icon={Code2} sub="React • Node • Next" color="#1DCD9F">
-               <div className="flex flex-col gap-1 w-full" style={{ opacity: 0.3 }}>
-                 <div style={{ height: '4px', width: '75%', backgroundColor: '#1DCD9F', borderRadius: '9999px' }}></div>
-                 <div style={{ height: '4px', width: '50%', backgroundColor: '#1DCD9F', borderRadius: '9999px', marginLeft: '0.5rem' }}></div>
-                 <div style={{ height: '4px', width: '66%', backgroundColor: '#1DCD9F', borderRadius: '9999px' }}></div>
-               </div>
-            </MenuItem>
+        {/* 2. DEVELOPER */}
+        <BentoCard onClick={() => navigate('/developer')} color="#1DCD9F" delay={0.2} className="col-span-2 row-span-1">
+          <MenuItem title="Developer" icon={Code2} sub="Work • Skills • Services" color="#1DCD9F">
+            <div className="flex flex-col gap-1 w-full" style={{ opacity: 0.3 }}>
+              <div style={{ height: '4px', width: '60%', backgroundColor: '#1DCD9F', borderRadius: '9999px' }}></div>
+              <div style={{ height: '4px', width: '30%', backgroundColor: '#1DCD9F', borderRadius: '9999px', marginLeft: '0.5rem' }}></div>
+              <div style={{ height: '4px', width: '45%', backgroundColor: '#1DCD9F', borderRadius: '9999px' }}></div>
+            </div>
+          </MenuItem>
         </BentoCard>
 
-        {/* 3. DESIGNER (With Color Palette Detail) */}
-        <BentoCard color="#C084FC" delay={0.3} className="col-span-2 row-span-1">
-            <MenuItem title="Designer" icon={Palette} sub="Figma • Spline" color="#C084FC">
-               <div className="flex gap-2">
-                 <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#C084FC' }}></div>
-                 <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: 'white' }}></div>
-                 <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#f472b6' }}></div>
-                 <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#60a5fa' }}></div>
-               </div>
-            </MenuItem>
+        {/* 3. DESIGNER */}
+        <BentoCard onClick={() => navigate('/designer')} color="#C084FC" delay={0.3} className="col-span-2 row-span-1">
+          <MenuItem title="Designer" icon={Palette} sub="Gallery • Tools • Studio" color="#C084FC">
+            <div className="flex gap-2">
+              <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#C084FC' }}></div>
+              <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: 'white' }}></div>
+              <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#f472b6' }}></div>
+              <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#60a5fa' }}></div>
+            </div>
+          </MenuItem>
         </BentoCard>
 
-        {/* 4. BLOGGER (With Text Lines) */}
-        <BentoCard color="#F472B6" delay={0.4} className="col-span-2 row-span-1">
-            <MenuItem title="Blogger" icon={Terminal} sub="Tech • Rants" color="#F472B6">
-               <div className="font-mono" style={{ fontSize: '8px', color: '#F472B6', opacity: 0.5, lineHeight: 1.2 }}>
-                  {'>'} git commit -m "update"<br/>
-                  {'>'} npm run build<br/>
-                  {'>'} deploy success
-               </div>
-            </MenuItem>
+        {/* 4. BLOGGER */}
+        <BentoCard onClick={() => navigate('/blogger')} color="#F472B6" delay={0.4} className="col-span-2 row-span-1">
+          <MenuItem title="Blogger" icon={Terminal} sub="Articles • Roadmaps • Snippets" color="#F472B6">
+            <div className="font-mono" style={{ fontSize: '8px', color: '#F472B6', opacity: 0.5, lineHeight: 1.2 }}>
+              {'>'} git commit -m "update"<br />
+              {'>'} npm run build<br />
+              {'>'} deploy success
+            </div>
+          </MenuItem>
         </BentoCard>
 
-        {/* 5. CREATOR (With Play Button) */}
-        <BentoCard color="#22d3ee" delay={0.5} className="col-span-2 row-span-1">
-            <MenuItem title="Creator" icon={Zap} sub="Video • Content" color="#22d3ee">
-               <div className="flex items-center gap-2">
-                 <div style={{ width: '1.5rem', height: '1.5rem', borderRadius: '50%', border: '1px solid #22d3ee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                   <Play size={8} fill="currentColor" style={{ color: '#22d3ee' }} />
-                 </div>
-                 <div style={{ height: '1px', width: '2rem', backgroundColor: '#22d3ee', opacity: 0.3 }}></div>
-               </div>
-            </MenuItem>
+        {/* 5. CREATOR */}
+        <BentoCard onClick={() => navigate('/creator')} color="#22d3ee" delay={0.5} className="col-span-2 row-span-1">
+          <MenuItem title="Creator" icon={Zap} sub="Sketches • Writtings • Vision" color="#22d3ee">
+            <div className="flex items-center gap-2">
+              <div style={{ width: '1.5rem', height: '1.5rem', borderRadius: '50%', border: '1px solid #22d3ee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Play size={8} fill="currentColor" style={{ color: '#22d3ee' }} />
+              </div>
+              <div style={{ height: '1px', width: '2rem', backgroundColor: '#22d3ee', opacity: 0.3 }}></div>
+            </div>
+          </MenuItem>
         </BentoCard>
 
-        {/* 6. TWITTER */}
-        <BentoCard color="#1DA1F2" delay={0.6} className="col-span-1 row-span-1 group">
-           <div className="menu-item">
-             <div className="flex justify-between items-start">
-                <div style={{ padding: '0.75rem', backgroundColor: 'rgba(29, 161, 242, 0.1)', borderRadius: '0.5rem', color: '#1DA1F2' }}>
-                   <Twitter size={24} />
-                </div>
-                <ArrowUpRight className="arrow-icon" size={18} />
-             </div>
-             <div style={{ marginTop: 'auto' }}>
-                <p className="font-mono uppercase tracking-wider" style={{ color: 'var(--text-gray)', fontSize: '0.625rem', marginBottom: '0.25rem' }}>Latest Post</p>
-                <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'white' }}>@Tweets</h4>
-             </div>
-           </div>
+        {/* 6. GMAIL */}
+        <BentoCard onClick={() => window.location.href = 'mailto:omthakur6640@gmail.com'} color="#ff7e29ff" delay={0.6} className="col-span-1 row-span-1 group">
+          <div className="menu-item">
+            <div className="flex justify-between items-start">
+              <div style={{ padding: '0.75rem', backgroundColor: '#1a1a1aff', borderRadius: '0.5rem', color: '#b04701ff' }}>
+                <Mail size={24} />
+              </div>
+              <ArrowUpRight className="arrow-icon" size={18} />
+            </div>
+            <div style={{ marginTop: 'auto' }}>
+              <p className="font-mono uppercase tracking-wider" style={{ color: 'var(--text-gray)', fontSize: '0.625rem', marginBottom: '0.25rem' }}>Mail to ping</p>
+              <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'white' }}>@gmail.com</h4>
+            </div>
+          </div>
         </BentoCard>
 
         {/* 7. LINKEDIN */}
-        <BentoCard color="#0077b5" delay={0.7} className="col-span-1 row-span-1 group">
-           <div className="menu-item">
-             <div className="flex justify-between items-start">
-                <div style={{ padding: '0.75rem', backgroundColor: 'rgba(0, 119, 181, 0.1)', borderRadius: '0.5rem', color: '#0077b5' }}>
-                   <Linkedin size={24} />
-                </div>
-                <ArrowUpRight className="arrow-icon" size={18} />
-             </div>
-             <div style={{ marginTop: 'auto' }}>
-                <p className="font-mono uppercase tracking-wider" style={{ color: 'var(--text-gray)', fontSize: '0.625rem', marginBottom: '0.25rem' }}>Professional</p>
-                <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'white' }}>/in/Khilesh</h4>
-             </div>
-           </div>
+        <BentoCard onClick={() => window.open('https://www.linkedin.com/in/khilesh-thakur-a09865228', '_blank')} color="#0077b5" delay={0.7} className="col-span-1 row-span-1 group">
+          <div className="menu-item">
+            <div className="flex justify-between items-start">
+              <div style={{ padding: '0.75rem', backgroundColor: 'rgba(0, 119, 181, 0.1)', borderRadius: '0.5rem', color: '#0077b5' }}>
+                <Linkedin size={24} />
+              </div>
+              <ArrowUpRight className="arrow-icon" size={18} />
+            </div>
+            <div style={{ marginTop: 'auto' }}>
+              <p className="font-mono uppercase tracking-wider" style={{ color: 'var(--text-gray)', fontSize: '0.625rem', marginBottom: '0.25rem' }}>Professional</p>
+              <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'white' }}>/in/khilesh-thakur</h4>
+            </div>
+          </div>
         </BentoCard>
 
         {/* 8. GITHUB */}
-        <BentoCard color="#ffffff" delay={0.8} className="col-span-1 row-span-1 group">
-           <div className="menu-item">
-             <div className="flex justify-between items-start">
-                <div style={{ padding: '0.75rem', backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: '0.5rem', color: 'white' }}>
-                   <Github size={24} />
-                </div>
-                <ArrowUpRight className="arrow-icon" size={18} />
-             </div>
-             <div style={{ marginTop: 'auto' }}>
-                <p className="font-mono uppercase tracking-wider" style={{ color: 'var(--text-gray)', fontSize: '0.625rem', marginBottom: '0.25rem' }}>Source Code</p>
-                <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'white', textDecoration: 'underline', textUnderlineOffset: '4px', textDecorationColor: 'rgba(255,255,255,0.3)' }}>/Khilesh-Dev</h4>
-             </div>
-           </div>
+        <BentoCard onClick={() => window.open('https://github.com/KhileshThakur', '_blank')} color="#ffffff" delay={0.8} className="col-span-1 row-span-1 group">
+          <div className="menu-item">
+            <div className="flex justify-between items-start">
+              <div style={{ padding: '0.75rem', backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: '0.5rem', color: 'white' }}>
+                <Github size={24} />
+              </div>
+              <ArrowUpRight className="arrow-icon" size={18} />
+            </div>
+            <div style={{ marginTop: 'auto' }}>
+              <p className="font-mono uppercase tracking-wider" style={{ color: 'var(--text-gray)', fontSize: '0.625rem', marginBottom: '0.25rem' }}>Source Code</p>
+              <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'white' }}>/KhileshThakur</h4>
+            </div>
+          </div>
         </BentoCard>
 
-        {/* 9. SYSTEM STATUS */}
-        <BentoCard color="#FACC15" delay={0.9} className="col-span-1 row-span-1 p-6 flex flex-col justify-between overflow-hidden">
-            <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between', position: 'relative', zIndex: 10 }}>
-              <div className="flex justify-between items-start z-10">
-                 <div className="flex items-center gap-2">
-                   <Cpu size={20} color="#FACC15" />
-                   <span className="text-xs font-bold tracking-wider" style={{ color: '#FACC15' }}>CPU</span>
-                 </div>
-                 <div className="flex gap-1">
-                   <div className="animate-pulse" style={{ width: '4px', height: '4px', backgroundColor: '#FACC15', borderRadius: '50%' }}></div>
-                   <div className="animate-pulse" style={{ width: '4px', height: '4px', backgroundColor: '#FACC15', borderRadius: '50%', animationDelay: '0.1s' }}></div>
-                 </div>
+        {/* 9. ADMIN OS */}
+        <BentoCard 
+          color="#FACC15" 
+          delay={0.9} 
+          onClick={() => navigate('/admin')}
+          className="col-span-1 row-span-1 p-6 flex flex-col justify-between overflow-hidden cursor-pointer hover:bg-white/5 transition-colors group"
+        >
+          <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between', position: 'relative', zIndex: 10 }}>
+            <div className="flex justify-between items-start z-10">
+              <div className="flex items-center gap-2">
+                <LayoutDashboard size={20} color="#FACC15" /> 
+                <span className="text-xs font-bold tracking-wider" style={{ color: '#FACC15' }}>adminOS</span>
               </div>
-              
-              <div className="mt-auto flex justify-between items-end">
-                 <div>
-                    <h4 style={{ fontSize: '1.875rem', fontWeight: 700, letterSpacing: '-0.05em', margin: 0 }}>98<span style={{ fontSize: '1rem', fontWeight: 400, color: 'var(--text-gray)' }}>%</span></h4>
-                    <p className="font-mono uppercase" style={{ fontSize: '0.625rem', color: 'var(--text-gray)', marginTop: '0.25rem' }}>System Optimal</p>
-                 </div>
-                 <div style={{ textAlign: 'right' }}>
-                   <span className="font-mono" style={{ fontSize: '0.625rem', color: 'var(--text-gray)' }}>MEM: 16GB</span>
-                 </div>
+              <div className="flex gap-1">
+                <div className="animate-pulse" style={{ width: '4px', height: '4px', backgroundColor: '#FACC15', borderRadius: '50%' }}></div>
+                <div className="animate-pulse" style={{ width: '4px', height: '4px', backgroundColor: '#FACC15', borderRadius: '50%', animationDelay: '0.1s' }}></div>
               </div>
             </div>
-            
-            {/* Animated Graph Line */}
-            <div className="absolute bottom-0 left-0 right-0 pointer-events-none flex items-end justify-between px-6 pb-6 gap-1" 
-                 style={{ height: '6rem', opacity: 0.2, padding: '0 1.5rem 1.5rem 1.5rem' }}>
-               {[40, 60, 45, 80, 55, 90, 70, 85, 60, 95].map((h, i) => (
-                  <motion.div 
-                    key={i} 
-                    initial={{ height: '20%' }}
-                    animate={{ height: [`${h}%`, `${h - 20}%`, `${h}%`] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: i * 0.1 }}
-                    style={{ width: '100%', backgroundColor: '#FACC15', borderTopLeftRadius: '2px', borderTopRightRadius: '2px' }}
-                  />
-               ))}
+            <div className="mt-auto flex justify-between items-end">
+              <div>
+                <h4 style={{ fontSize: '1.875rem', fontWeight: 700, letterSpacing: '-0.05em', margin: 0, color: '#fff' }}>Admin</h4>
+                <p className="font-mono uppercase" style={{ fontSize: '0.625rem', color: 'var(--text-gray)', marginTop: '0.25rem' }}>Restricted Access</p>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <span className="font-mono group-hover:text-[#FACC15] transition-colors" style={{ fontSize: '0.625rem', color: 'var(--text-gray)' }}>CONSOLE &gt;_</span>
+              </div>
             </div>
+          </div>
+          <div className="absolute bottom-0 left-0 right-0 pointer-events-none flex items-end justify-between px-6 pb-6 gap-1"
+            style={{ height: '6rem', opacity: 0.2, padding: '0 1.5rem 1.5rem 1.5rem' }}>
+            {[40, 60, 45, 80, 55, 90, 70, 85, 60, 95].map((h, i) => (
+              <motion.div
+                key={i}
+                initial={{ height: '20%' }}
+                animate={{ height: [`${h}%`, `${h - 20}%`, `${h}%`] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: i * 0.1 }}
+                style={{ width: '100%', backgroundColor: '#FACC15', borderTopLeftRadius: '2px', borderTopRightRadius: '2px' }}
+              />
+            ))}
+          </div>
         </BentoCard>
 
       </div>
 
       {/* FOOTER */}
       <footer className="footer font-mono uppercase">
-         <div className="flex items-center gap-2">
-           <div className="animate-pulse" style={{ width: '6px', height: '6px', backgroundColor: '#22c55e', borderRadius: '50%' }}></div>
-           <p>Secure Connection // Encrypted</p>
-         </div>
-         <p style={{ marginTop: '0.5rem' }}>© 2024 Khilesh T.</p>
+        <div className="flex items-center gap-2">
+          <div className="animate-pulse" style={{ width: '6px', height: '6px', backgroundColor: '#22c55e', borderRadius: '50%' }}></div>
+          <p>Secure Connection // Encrypted</p>
+        </div>
+        <p style={{ marginTop: '0.5rem' }}>© 2024 {header.name || "Khilesh T."}</p>
       </footer>
     </div>
   );

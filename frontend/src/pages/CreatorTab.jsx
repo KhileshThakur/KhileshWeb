@@ -1,38 +1,16 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  ArrowLeft, PenTool, BookOpen, Image as ImageIcon, 
-  Feather, Eye, Heart, Share2, Maximize2, 
-  ChevronRight, ExternalLink, Brush, Edit3, 
-  Coffee, Sparkles, Book, X
-} from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
+
+import { useQuery } from "@tanstack/react-query";
+import {
+  getCreatorSketches,
+  getCreatorBooks,
+  getCreatorThoughts
+} from "../api/public-api";
 
 import './CreatorTab.css';
-
-/* --- DATA --- */
-
-const SKETCHES = [
-  { id: 1, title: "Urban Solitude", date: "2024", img: "https://images.unsplash.com/photo-1544531586-fde5298cdd40?auto=format&fit=crop&q=80&w=800" },
-  { id: 2, title: "Charcoal Study", date: "2023", img: "https://images.unsplash.com/photo-1628260412297-a3377e45006f?auto=format&fit=crop&q=80&w=800" },
-  { id: 3, title: "Cybernetic Eye", date: "2024", img: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&q=80&w=800" },
-  { id: 4, title: "Lost in Translation", date: "2023", img: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&q=80&w=800" }
-];
-
-const BOOKS = [
-  {
-    id: 1,
-    title: "The Silent Algorithm",
-    author: "Khilesh T.",
-    desc: "A journey through the mind of a developer discovering the intersection of logic and emotion. 'The Silent Algorithm' explores how our digital creations reflect our human imperfections.",
-    cover: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=800"
-  }
-];
-
-const THOUGHTS = [
-  { id: 1, date: "NOV 12", text: "Creativity is not about adding more, but stripping away the unnecessary until only the truth remains." },
-  { id: 2, date: "OCT 08", text: "Code is poetry written for machines. Sketching is poetry written for the soul." },
-  { id: 3, date: "SEP 21", text: "The blank page is the most terrifying and liberating interface ever designed." }
-];
 
 /* --- COMPONENTS --- */
 
@@ -67,8 +45,8 @@ const BookCard = ({ book }) => (
       <div className="book-author">by {book.author}</div>
       <p className="book-desc">{book.desc}</p>
       <div className="book-actions">
-        <button className="read-btn"><BookOpen size={18} /> Read Sample</button>
-        <button className="outline-btn"><Share2 size={18} /> Share</button>
+        <button className="read-btn"><LucideIcons.BookOpen size={18} /> Read Sample</button>
+        <button className="outline-btn"><LucideIcons.Share2 size={18} /> Share</button>
       </div>
     </div>
   </div>
@@ -77,7 +55,7 @@ const BookCard = ({ book }) => (
 const VisionCard = ({ thought }) => (
   <div className="vision-card">
     <div className="vision-date">{thought.date}</div>
-    <Feather className="vision-icon" size={24} />
+    <LucideIcons.Feather className="vision-icon" size={24} />
     <p className="vision-text">"{thought.text}"</p>
   </div>
 );
@@ -87,18 +65,26 @@ const VisionCard = ({ thought }) => (
 const GalleryView = () => {
   const [selectedImg, setSelectedImg] = useState(null);
 
+  const { data: sketches = [], isLoading, error } = useQuery({
+    queryKey: ['creator-sketches'],
+    queryFn: getCreatorSketches
+  });
+
+  if (isLoading) return <div className="loading-state"><LucideIcons.Loader2 className="animate-spin" /> Loading Gallery...</div>;
+  if (error) return <div className="error-state">Failed to load sketches.</div>;
+
   return (
     <div>
       <div style={{marginBottom:'2rem', display:'flex', alignItems:'center', gap:'1rem'}}>
         <h2 style={{fontSize:'2.5rem', fontWeight:800, margin:0, color:'white', lineHeight:1}}>Artworks</h2>
         <span style={{height:'1px', flex:1, background:'var(--border)'}}></span>
-        <span style={{color:'var(--text-muted)', fontFamily:'JetBrains Mono', fontSize:'0.8rem'}}>0{SKETCHES.length} ITEMS</span>
+        <span style={{color:'var(--text-muted)', fontFamily:'monospace', fontSize:'0.8rem'}}>0{sketches.length} ITEMS</span>
       </div>
       
       <div className="gallery-grid">
-        {SKETCHES.map(s => (
+        {sketches.map((s, i) => (
           <SketchCard
-            key={s.id}
+            key={s.id || s._id || i}
             sketch={s}
             onClick={() => setSelectedImg(s)}
           />
@@ -113,12 +99,53 @@ const GalleryView = () => {
             animate={{ opacity: 1 }} 
             exit={{ opacity: 0 }}
             onClick={() => setSelectedImg(null)}
+            // Inline styles to fix positioning issues
+            style={{
+              position: 'fixed',
+              top: 0, 
+              left: 0,
+              background: 'rgba(0, 0, 0, 0.9)',
+              backdropFilter: 'blur(10px)',
+              zIndex: 9999,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '2rem'
+            }}
           >
-            <div className="img-modal" onClick={e => e.stopPropagation()}>
-              <button className="close-modal" onClick={() => setSelectedImg(null)}>
-                <X size={32} />
+            <div 
+              className="img-modal" 
+              onClick={e => e.stopPropagation()}
+              style={{ position: 'relative', maxWidth: '90%', maxHeight: '90%' }}
+            >
+              <button 
+                className="close-modal" 
+                onClick={() => setSelectedImg(null)}
+                style={{
+                  position: 'absolute',
+                  top: '-3rem',
+                  right: '-2rem',
+                  background: 'none',
+                  border: 'none',
+                  color: 'white',
+                  cursor: 'pointer',
+                  outline: 'none'
+                }}
+              >
+                <LucideIcons.X size={32} />
               </button>
-              <img src={selectedImg.img} alt={selectedImg.title} />
+              
+              <img 
+                src={selectedImg.img} 
+                alt={selectedImg.title} 
+                style={{ 
+                  maxWidth: '100%', 
+                  maxHeight: '80vh', 
+                  borderRadius: '4px',
+                  boxShadow: '0 20px 50px rgba(0,0,0,0.5)' 
+                }} 
+              />
+              
               <div
                 style={{
                   textAlign:'center',
@@ -138,27 +165,47 @@ const GalleryView = () => {
   );
 };
 
-const LibraryView = () => (
-  <div className="library-layout">
-    <div style={{textAlign:'center', marginBottom:'1rem'}}>
-      <h2 style={{fontSize:'2.5rem', fontWeight:800, color:'white', marginBottom:'0.5rem'}}>Published Works</h2>
-      <p style={{color:'var(--text-muted)'}}>Stories penned in the quiet hours.</p>
-    </div>
-    {BOOKS.map(b => <BookCard key={b.id} book={b} />)}
-  </div>
-);
+const LibraryView = () => {
+  const { data: books = [], isLoading, error } = useQuery({
+    queryKey: ['creator-books'],
+    queryFn: getCreatorBooks
+  });
 
-const VisionView = () => (
-  <div>
-    <div style={{marginBottom:'2rem'}}>
-      <h2 style={{fontSize:'2.5rem', fontWeight:800, color:'white', margin:0}}>Journal</h2>
-      <p style={{color:'var(--text-muted)', marginTop:'0.5rem'}}>Fragments of a creative mind.</p>
+  if (isLoading) return <div className="loading-state"><LucideIcons.Loader2 className="animate-spin" /> Loading Library...</div>;
+  if (error) return <div className="error-state">Failed to load books.</div>;
+
+  return (
+    <div className="library-layout">
+      <div style={{textAlign:'center', marginBottom:'1rem'}}>
+        <h2 style={{fontSize:'2.5rem', fontWeight:800, color:'white', marginBottom:'0.5rem'}}>Published Works</h2>
+        <p style={{color:'var(--text-muted)'}}>Stories penned in the quiet hours.</p>
+      </div>
+      {books.map((b, i) => <BookCard key={b.id || b._id || i} book={b} />)}
     </div>
-    <div className="vision-grid">
-      {THOUGHTS.map((t) => <VisionCard key={t.id} thought={t} />)}
+  );
+};
+
+const VisionView = () => {
+  const { data: thoughts = [], isLoading, error } = useQuery({
+    queryKey: ['creator-thoughts'],
+    queryFn: getCreatorThoughts
+  });
+
+  if (isLoading) return <div className="loading-state"><LucideIcons.Loader2 className="animate-spin" /> Loading Vision...</div>;
+  if (error) return <div className="error-state">Failed to load thoughts.</div>;
+
+  return (
+    <div>
+      <div style={{marginBottom:'2rem'}}>
+        <h2 style={{fontSize:'2.5rem', fontWeight:800, color:'white', margin:0}}>Journal</h2>
+        <p style={{color:'var(--text-muted)', marginTop:'0.5rem'}}>Fragments of a creative mind.</p>
+      </div>
+      <div className="vision-grid">
+        {thoughts.map((t, i) => <VisionCard key={t.id || t._id || i} thought={t} />)}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 /* --- MAIN COMPONENT --- */
 
@@ -185,13 +232,13 @@ const CreatorTab = () => {
         {/* LEFT: CONTENT AREA */}
         <div className="main-display">
           <div className="top-bar">
-            <button className="back-btn" onClick={() => window.location.reload()}>
-              <ArrowLeft size={20} />
-            </button>
+            <Link className="back-btn" to={'/'}>
+              <LucideIcons.ArrowLeft size={20} />
+            </Link>
             <div className="breadcrumbs">
               Studio <span>/</span> Creator <span>/</span> {activeTab}
             </div>
-            <div style={{display:'flex', gap:'0.5rem', marginRight:'1rem'}}>
+            <div style={{display:'flex', gap:'0.5rem', marginRight:'1rem', marginLeft:'auto'}}>
                <div style={{width:'8px', height:'8px', borderRadius:'50%', background:'var(--accent)'}}></div>
                <div style={{width:'8px', height:'8px', borderRadius:'50%', background:'#333'}}></div>
             </div>
@@ -224,8 +271,8 @@ const CreatorTab = () => {
               className={`nav-box-btn ${activeTab === 'artworks' ? 'active' : ''}`}
               onClick={() => handleTabChange('artworks')}
             >
-              <PenTool size={40} className="nav-icon-bg" />
-              <Brush size={24} className="nav-icon-mobile" />
+              <LucideIcons.PenTool size={40} className="nav-icon-bg" />
+              <LucideIcons.Brush size={24} className="nav-icon-mobile" />
               <span className="nav-label">Sketches</span>
               <span className="nav-sub">Hand-Drawn Gallery</span>
             </div>
@@ -234,8 +281,8 @@ const CreatorTab = () => {
               className={`nav-box-btn ${activeTab === 'library' ? 'active' : ''}`}
               onClick={() => handleTabChange('library')}
             >
-              <BookOpen size={40} className="nav-icon-bg" />
-              <Book size={24} className="nav-icon-mobile" />
+              <LucideIcons.BookOpen size={40} className="nav-icon-bg" />
+              <LucideIcons.Book size={24} className="nav-icon-mobile" />
               <span className="nav-label">Writings</span>
               <span className="nav-sub">Books & Stories</span>
             </div>
@@ -244,8 +291,8 @@ const CreatorTab = () => {
               className={`nav-box-btn ${activeTab === 'vision' ? 'active' : ''}`}
               onClick={() => handleTabChange('vision')}
             >
-              <Eye size={40} className="nav-icon-bg" />
-              <Sparkles size={24} className="nav-icon-mobile" />
+              <LucideIcons.Eye size={40} className="nav-icon-bg" />
+              <LucideIcons.Sparkles size={24} className="nav-icon-mobile" />
               <span className="nav-label">Vision</span>
               <span className="nav-sub">Creative Journal</span>
             </div>

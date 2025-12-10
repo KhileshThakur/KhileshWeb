@@ -1,155 +1,45 @@
-// src/components/DeveloperTab.jsx
-import React, { useState } from "react";
+// src/pages/DeveloperTab.jsx
+import React, { useState, useEffect, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  ArrowLeft,
-  Code2,
-  Cpu,
-  Globe,
-  Layout,
-  Database,
-  Cloud,
-  Terminal,
-  GitBranch,
-  Box,
-  Layers,
-  ExternalLink,
-  Github,
-  ChevronRight,
-  Hash,
-  Zap,
-  Server,
-  Monitor,
-  Briefcase,
-  Clock,
-  Activity,
-  Network,
-} from "lucide-react";
+
+// 1. IMPORT ALL ICONS AS A NAMESPACE
+import * as LucideIcons from "lucide-react";
 
 import "./DeveloperTab.css";
 
-/* --- DATA --- */
+import { useQuery } from "@tanstack/react-query";
+import {
+  getDeveloperSkills,
+  getDeveloperProjects,
+  getDeveloperServices,
+} from "../api/public-api";
 
-const SKILL_CATEGORIES = {
-  LANGUAGES: [
-    { name: "JavaScript", icon: Code2, level: 5, xp: "5 Yrs" },
-    { name: "TypeScript", icon: Hash, level: 4, xp: "3 Yrs" },
-    { name: "Python", icon: Terminal, level: 3, xp: "2 Yrs" },
-    { name: "Java", icon: Code2, level: 4, xp: "4 Yrs" },
-    { name: "SQL", icon: Database, level: 4, xp: "3 Yrs" },
-  ],
-  FRAMEWORKS: [
-    { name: "React / Next.js", icon: Globe, level: 5, xp: "4 Yrs" },
-    { name: "Node.js", icon: Server, level: 4, xp: "3 Yrs" },
-    { name: "Tailwind CSS", icon: Layout, level: 5, xp: "3 Yrs" },
-    { name: "Three.js", icon: Box, level: 3, xp: "1 Yr" },
-  ],
-  TOOLS: [
-    { name: "Git / CI/CD", icon: GitBranch, level: 4, xp: "5 Yrs" },
-    { name: "Docker", icon: Layers, level: 3, xp: "2 Yrs" },
-    { name: "AWS", icon: Cloud, level: 3, xp: "2 Yrs" },
-    { name: "Figma", icon: Layout, level: 4, xp: "3 Yrs" },
-  ],
+/* --- 2. DYNAMIC ICON COMPONENT --- */
+
+const DynamicIcon = ({ name, size = 24, className }) => {
+  // Default fallback for Developer tab is usually Terminal or Code
+  if (!name) return <LucideIcons.Terminal size={size} className={className} />;
+
+  let IconComponent = LucideIcons[name];
+
+  // Handle case sensitivity (backend: "gitBranch" -> frontend: "GitBranch")
+  if (!IconComponent) {
+    const pascalName = name.charAt(0).toUpperCase() + name.slice(1);
+    IconComponent = LucideIcons[pascalName];
+  }
+
+  // Fallback if not found
+  if (!IconComponent) {
+    return <LucideIcons.Code2 size={size} className={className} />;
+  }
+
+  return <IconComponent size={size} className={className} />;
 };
-
-const PROJECTS_DATA = [
-  {
-    id: 1,
-    title: "AI Chatbot Interface",
-    desc: "A high-performance conversational agent interface built with React and WebSockets. Features real-time streaming responses, custom Markdown rendering, and adaptive UI themes.",
-    tech: ["React", "Node.js", "OpenAI API", "WebSockets"],
-    year: "2024",
-    image:
-      "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: 2,
-    title: "E-Commerce Dashboard",
-    desc: "Comprehensive analytics dashboard for online retailers. Visualizes sales data, inventory levels, and user demographics using D3.js with real-time updates via Supabase.",
-    tech: ["Next.js", "D3.js", "Supabase", "Tailwind"],
-    year: "2023",
-    image:
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: 3,
-    title: "3D Portfolio Site",
-    desc: "Immersive 3D portfolio using Three.js. Features interactive physics-based particles, a custom GLSL shader background, and smooth camera transitions.",
-    tech: ["Three.js", "React Three Fiber", "GLSL"],
-    year: "2023",
-    image:
-      "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=800",
-  },{
-    id: 4,
-    title: "AI Chatbot Interface",
-    desc: "A high-performance conversational agent interface built with React and WebSockets. Features real-time streaming responses, custom Markdown rendering, and adaptive UI themes.",
-    tech: ["React", "Node.js", "OpenAI API", "WebSockets"],
-    year: "2024",
-    image:
-      "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: 5,
-    title: "E-Commerce Dashboard",
-    desc: "Comprehensive analytics dashboard for online retailers. Visualizes sales data, inventory levels, and user demographics using D3.js with real-time updates via Supabase.",
-    tech: ["Next.js", "D3.js", "Supabase", "Tailwind"],
-    year: "2023",
-    image:
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: 6,
-    title: "3D Portfolio Site",
-    desc: "Immersive 3D portfolio using Three.js. Features interactive physics-based particles, a custom GLSL shader background, and smooth camera transitions.",
-    tech: ["Three.js", "React Three Fiber", "GLSL"],
-    year: "2023",
-    image:
-      "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=800",
-  },
-
-];
-
-const SERVICES_DATA = [
-  {
-    id: 1,
-    title: "Full Stack Developer",
-    icon: Layers,
-    desc: "End-to-end web application development using modern MERN/Next.js stacks.",
-    tags: ["React", "Next.js", "Node.js"],
-  },
-  {
-    id: 2,
-    title: "ML Models",
-    icon: Cpu,
-    desc: "Custom machine learning models for predictive analysis and data processing.",
-    tags: ["Python", "TensorFlow", "Pandas"],
-  },
-  {
-    id: 3,
-    title: "AI Chatbots",
-    icon: Zap,
-    desc: "Intelligent conversational agents integrated with your existing business platforms.",
-    tags: ["LLMs", "LangChain", "OpenAI"],
-  },
-  {
-    id: 4,
-    title: "Microservices",
-    icon: Server,
-    desc: "Scalable backend architecture designed for high availability and performance.",
-    tags: ["Docker", "K8s", "RabbitMQ"],
-  },
-  {
-    id: 5,
-    title: "API Integration",
-    icon: Network,
-    desc: "Robust RESTful and GraphQL API development for seamless third-party connections.",
-    tags: ["GraphQL", "REST", "Auth0"],
-  },
-];
 
 /* --- COMPONENTS --- */
 
-const SkillModule = ({ name, icon: Icon, level, xp }) => (
+const SkillModule = ({ name, iconName, level, xp }) => (
   <motion.div
     className="skill-module"
     initial={{ opacity: 0, scale: 0.95 }}
@@ -159,7 +49,8 @@ const SkillModule = ({ name, icon: Icon, level, xp }) => (
   >
     <div className="module-header">
       <div className="module-icon">
-        <Icon size={18} />
+        {/* Use DynamicIcon here */}
+        <DynamicIcon name={iconName} size={18} />
       </div>
       <div className="module-title">{name}</div>
       <div className="xp-badge">{xp}</div>
@@ -178,13 +69,34 @@ const SkillModule = ({ name, icon: Icon, level, xp }) => (
 const SkillsView = () => {
   const [activeCat, setActiveCat] = useState("LANGUAGES");
 
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["developer-skills"],
+    queryFn: getDeveloperSkills,
+  });
+
+  if (isLoading) return <div className="skills-wrapper"><LucideIcons.Loader2 className="animate-spin" /> Loading skills...</div>;
+  if (error) return <div className="skills-wrapper">Failed to load skills.</div>;
+
+  // group by category from backend
+  const grouped = data.reduce((acc, skill) => {
+    const cat = skill.category || "OTHER";
+    if (!acc[cat]) acc[cat] = [];
+    acc[cat].push(skill);
+    return acc;
+  }, {});
+
+  const categories = Object.keys(grouped);
+  const fallbackCat = categories[0] || "LANGUAGES";
+  const active = categories.includes(activeCat) ? activeCat : fallbackCat;
+  const current = grouped[active] || [];
+
   return (
     <div className="skills-wrapper">
       <div className="skill-tabs">
-        {Object.keys(SKILL_CATEGORIES).map((cat) => (
+        {categories.map((cat) => (
           <button
             key={cat}
-            className={`skill-tab-btn ${activeCat === cat ? "active" : ""}`}
+            className={`skill-tab-btn ${active === cat ? "active" : ""}`}
             onClick={() => setActiveCat(cat)}
           >
             {cat}
@@ -193,55 +105,91 @@ const SkillsView = () => {
       </div>
 
       <motion.div
-        key={activeCat}
+        key={active}
         className="arsenal-grid"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -10 }}
         transition={{ duration: 0.3 }}
       >
-        {SKILL_CATEGORIES[activeCat].map((skill, i) => (
-          <SkillModule key={i} {...skill} />
+        {current.map((skill) => (
+          <SkillModule
+            key={skill._id || skill.id}
+            name={skill.name}
+            // Pass the string from backend directly
+            iconName={skill.icon} 
+            level={skill.level}
+            xp={skill.xp}
+          />
         ))}
       </motion.div>
     </div>
   );
 };
 
+const ServicesView = () => {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["developer-services"],
+    queryFn: getDeveloperServices,
+  });
 
-const ServicesView = () => (
-  <motion.div className="services-grid" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-    {SERVICES_DATA.map((service, i) => (
-      <motion.div
-        key={service.id}
-        className="service-card"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: i * 0.1 }}
-      >
-        <div className="service-icon-box">
-          <service.icon size={24} />
-        </div>
+  const services = data || [];
 
-        <div className="service-content">
-          <h3>{service.title}</h3>
-          <p>{service.desc}</p>
-        </div>
+  if (isLoading) return <div className="services-grid"><LucideIcons.Loader2 className="animate-spin" /> Loading services...</div>;
+  if (error) return <div className="services-grid">Failed to load services.</div>;
+  if (services.length === 0) return <div className="services-grid">No services found.</div>;
 
-        <div className="service-tags">
-          {service.tags.map((tag) => (
-            <span key={tag} className="service-pill">
-              {tag}
-            </span>
-          ))}
-        </div>
-      </motion.div>
-    ))}
-  </motion.div>
-);
+  return (
+    <motion.div className="services-grid" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+      {services.map((service, i) => (
+        <motion.div
+          key={service._id || i}
+          className="service-card"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: i * 0.1 }}
+        >
+          <div className="service-icon-box">
+            {/* Dynamic Icon Resolution */}
+            <DynamicIcon name={service.icon} size={24} />
+          </div>
+
+          <div className="service-content">
+            <h3>{service.title}</h3>
+            <p>{service.desc}</p>
+          </div>
+
+          <div className="service-tags">
+            {service.tags?.map((tag) => (
+              <span key={tag} className="service-pill">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </motion.div>
+      ))}
+    </motion.div>
+  );
+};
 
 const WorkView = () => {
-  const [activeProject, setActiveProject] = useState(PROJECTS_DATA[0]);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["developer-projects"],
+    queryFn: getDeveloperProjects,
+  });
+
+  const projects = data || [];
+  const [activeProject, setActiveProject] = useState(null);
+
+  useEffect(() => {
+    if (!activeProject && projects.length > 0) {
+      setActiveProject(projects[0]);
+    }
+  }, [projects, activeProject]);
+
+  if (isLoading) return <div className="work-layout"><LucideIcons.Loader2 className="animate-spin" /> Loading projects...</div>;
+  if (error) return <div className="work-layout">Failed to load projects.</div>;
+  if (!activeProject) return <div className="work-layout">No projects found.</div>;
 
   return (
     <motion.div
@@ -252,11 +200,11 @@ const WorkView = () => {
       transition={{ duration: 0.4 }}
     >
       <div className="project-list">
-        {PROJECTS_DATA.map((project) => (
+        {projects.map((project, index) => (
           <div
-            key={project.id}
+            key={project._id || index}
             className={`project-item ${
-              activeProject.id === project.id ? "active" : ""
+              activeProject._id === project._id ? "active" : ""
             }`}
             onClick={() => setActiveProject(project)}
           >
@@ -269,25 +217,25 @@ const WorkView = () => {
                   fontFamily: "monospace",
                 }}
               >
-                PRJ_0{project.id}
+                PRJ_0{index + 1}
               </div>
               <div
                 style={{
                   fontWeight: 600,
                   color:
-                    activeProject.id === project.id ? "white" : "#aaa",
+                    activeProject._id === project._id ? "white" : "#aaa",
                 }}
               >
                 {project.title}
               </div>
             </div>
             <div style={{ display: "flex", alignItems: "center" }}>
-              <ChevronRight
+              <LucideIcons.ChevronRight
                 size={16}
                 style={{
-                  opacity: activeProject.id === project.id ? 1 : 0.3,
+                  opacity: activeProject._id === project._id ? 1 : 0.3,
                   color:
-                    activeProject.id === project.id
+                    activeProject._id === project._id
                       ? "var(--accent)"
                       : "inherit",
                 }}
@@ -300,7 +248,7 @@ const WorkView = () => {
       <div className="project-detail-wrapper">
         <AnimatePresence mode="wait">
           <motion.div
-            key={activeProject.id}
+            key={activeProject._id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
@@ -368,12 +316,12 @@ const WorkView = () => {
                   color: "#666",
                 }}
               >
-                ID: {activeProject.id}_SECure // STATUS: DEPLOYED
+                ID: {activeProject._id} // STATUS: DEPLOYED
               </p>
             </div>
 
             <div style={{ marginBottom: "2rem" }}>
-              {activeProject.tech.map((t) => (
+              {activeProject.tech?.map((t) => (
                 <span key={t} className="tech-tag">
                   {t}
                 </span>
@@ -400,29 +348,39 @@ const WorkView = () => {
                 flexWrap: "wrap",
               }}
             >
-              <button
-                style={{
-                  background: "var(--accent)",
-                  color: "#000",
-                  border: "none",
-                  borderRadius: "4px",
-                  padding: "0.8rem 1.6rem",
-                  fontWeight: "bold",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.5rem",
-                  cursor: "pointer",
-                  transition: "transform 0.2s",
-                }}
-                onMouseOver={(e) =>
-                  (e.currentTarget.style.transform = "translateY(-2px)")
-                }
-                onMouseOut={(e) =>
-                  (e.currentTarget.style.transform = "translateY(0)")
-                }
-              >
-                <ExternalLink size={18} /> Live Demo
-              </button>
+              {activeProject.link && (
+                <a
+                  href={activeProject.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ textDecoration: "none" }}
+                >
+                <button
+                  style={{
+                    background: "var(--accent)",
+                    color: "#000",
+                    border: "none",
+                    borderRadius: "4px",
+                    padding: "0.8rem 1.6rem",
+                    fontWeight: "bold",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    cursor: "pointer",
+                    transition: "transform 0.2s",
+                  }}
+                  onMouseOver={(e) =>
+                    (e.currentTarget.style.transform = "translateY(-2px)")
+                  }
+                  onMouseOut={(e) =>
+                    (e.currentTarget.style.transform = "translateY(0)")
+                  }
+                >
+                  <LucideIcons.ExternalLink size={18} /> Live Demo
+                </button>
+                </a>
+              )}
+              
               <button
                 style={{
                   background: "transparent",
@@ -445,7 +403,7 @@ const WorkView = () => {
                   e.currentTarget.style.transform = "translateY(0)";
                 }}
               >
-                <Github size={18} /> Source Code
+                <LucideIcons.Github size={18} /> Source Code
               </button>
             </div>
           </motion.div>
@@ -482,13 +440,9 @@ const DeveloperTab = () => {
         <div className="main-display">
           {/* Top Navigation Bar */}
           <div className="top-bar">
-            <button
-              className="back-btn"
-              onClick={() => window.location.reload()}
-              title="Back to Home"
-            >
-              <ArrowLeft size={20} />
-            </button>
+            <Link className="back-btn" to={"/"} title="Back to Home">
+              <LucideIcons.ArrowLeft size={20} />
+            </Link>
             <div className="breadcrumbs">
               System <span>/</span> Developer <span>/</span> {activeTab}
             </div>
@@ -500,30 +454,9 @@ const DeveloperTab = () => {
                 gap: "0.5rem",
               }}
             >
-              <div
-                style={{
-                  width: "10px",
-                  height: "10px",
-                  borderRadius: "50%",
-                  background: "#ff5f56",
-                }}
-              />
-              <div
-                style={{
-                  width: "10px",
-                  height: "10px",
-                  borderRadius: "50%",
-                  background: "#ffbd2e",
-                }}
-              />
-              <div
-                style={{
-                  width: "10px",
-                  height: "10px",
-                  borderRadius: "50%",
-                  background: "#27c93f",
-                }}
-              />
+              <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#ff5f56" }} />
+              <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#ffbd2e" }} />
+              <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#27c93f" }} />
             </div>
           </div>
 
@@ -566,7 +499,7 @@ const DeveloperTab = () => {
             onClick={() => setActiveTab("work")}
           >
             {activeTab === "work" && (
-              <Cpu
+              <LucideIcons.Cpu
                 style={{
                   position: "absolute",
                   left: "10px",
@@ -577,7 +510,7 @@ const DeveloperTab = () => {
                 size={40}
               />
             )}
-            <Monitor
+            <LucideIcons.Monitor
               size={24}
               className="mobile-icon"
               style={{ display: "none" }}
@@ -600,7 +533,7 @@ const DeveloperTab = () => {
             onClick={() => setActiveTab("skills")}
           >
             {activeTab === "skills" && (
-              <Terminal
+              <LucideIcons.Terminal
                 style={{
                   position: "absolute",
                   left: "10px",
@@ -611,7 +544,7 @@ const DeveloperTab = () => {
                 size={40}
               />
             )}
-            <Zap
+            <LucideIcons.Zap
               size={24}
               className="mobile-icon"
               style={{ display: "none" }}
@@ -634,7 +567,7 @@ const DeveloperTab = () => {
             onClick={() => setActiveTab("services")}
           >
             {activeTab === "services" && (
-              <Server
+              <LucideIcons.Server
                 style={{
                   position: "absolute",
                   left: "10px",
@@ -645,7 +578,7 @@ const DeveloperTab = () => {
                 size={40}
               />
             )}
-            <Network
+            <LucideIcons.Network
               size={24}
               className="mobile-icon"
               style={{ display: "none" }}

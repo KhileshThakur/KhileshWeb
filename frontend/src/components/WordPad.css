@@ -1,0 +1,365 @@
+/* src/components/WordPad.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  /* Minimal Zinc Palette */
+  --wp-bg-overlay: rgba(0, 0, 0, 0.7);
+  --wp-bg-modal: #0f0f11;
+  --wp-bg-panel: #141416;
+  --wp-border: #27272a;
+  --wp-text-main: #e4e4e7;
+  --wp-text-muted: #71717a;
+  --wp-accent: #2dd4bf; 
+  --wp-accent-dim: rgba(45, 212, 191, 0.1);
+}
+
+/* 1. Modal Overlay */
+.wp-portal-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--wp-bg-overlay);
+  backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 1rem;
+  font-family: 'Inter', sans-serif;
+  color: var(--wp-text-main);
+}
+
+.wp-portal-modal {
+  width: 100%; max-width: 1100px; height: 85vh;
+  background: var(--wp-bg-modal);
+  border: 1px solid var(--wp-border);
+  border-radius: 12px;
+  display: flex; flex-direction: column;
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+  position: relative;
+}
+
+/* 2. Header */
+.wp-header {
+  height: 60px; min-height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--wp-border);
+  background: var(--wp-bg-panel);
+}
+
+.wp-header-left, .wp-header-right { display: flex; align-items: center; gap: 12px; }
+
+.wp-icon-box {
+  width: 32px; height: 32px;
+  background: var(--wp-accent-dim);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--wp-accent);
+}
+.wp-title { font-weight: 600; font-size: 0.9rem; }
+
+/* View Toggle */
+.wp-view-toggle {
+  display: flex; gap: 4px;
+  background: #1c1c1f; padding: 4px; border-radius: 8px; border: 1px solid var(--wp-border);
+}
+.wp-view-toggle button {
+  display: flex; align-items: center; gap: 6px;
+  background: transparent; border: none; color: var(--wp-text-muted);
+  padding: 6px 12px; border-radius: 6px; cursor: pointer;
+  font-size: 0.8rem; font-weight: 500; transition: all 0.2s;
+}
+.wp-view-toggle button.active { background: #27272a; color: #fff; }
+.wp-view-toggle button:hover:not(.active) { color: #fff; }
+
+/* Buttons */
+.wp-btn-icon {
+  background: transparent; border: none; color: var(--wp-text-muted);
+  padding: 8px; border-radius: 6px; cursor: pointer; transition: 0.2s;
+}
+.wp-btn-icon:hover, .wp-btn-icon.active { background: #27272a; color: #fff; }
+
+.wp-btn-primary {
+  background: var(--wp-accent); color: #09090b; border: none;
+  padding: 8px 16px; border-radius: 6px; cursor: pointer;
+  font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; gap: 6px;
+}
+.wp-btn-primary:active { transform: scale(0.96); }
+
+/* 3. Toolbar (Responsive Scroll) */
+.wp-toolbar-row {
+  height: 48px; min-height: 48px;
+  border-bottom: 1px solid var(--wp-border);
+  background: var(--wp-bg-modal); 
+  display: flex; align-items: center;
+  overflow: hidden; /* Hide scrollbar wrapper */
+}
+
+.wp-toolbar-scroll-container {
+  padding: 0 20px;
+  width: 100%;
+  overflow-x: auto; /* Enable scroll */
+  white-space: nowrap;
+  /* Hide scrollbar visually */
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
+}
+.wp-toolbar-scroll-container::-webkit-scrollbar { display: none; }
+
+.wp-toolbar-group { display: flex; align-items: center; gap: 4px; height: 100%; }
+.wp-toolbar-group button {
+  background: transparent; border: none; padding: 6px; border-radius: 4px;
+  color: var(--wp-text-muted); cursor: pointer; flex-shrink: 0;
+}
+.wp-toolbar-group button:hover { background: #27272a; color: #fff; }
+.wp-divider { width: 1px; height: 18px; background: var(--wp-border); margin: 0 8px; flex-shrink: 0; }
+
+/* 4. Workspace */
+.wp-workspace-container { display: flex; flex: 1; min-height: 0; position: relative; overflow: hidden; }
+.wp-workspace { display: flex; flex: 1; width: 100%; }
+
+.wp-pane { flex: 1; height: 100%; overflow: hidden; display: flex; flex-direction: column; }
+.preview-pane { border-left: 1px solid var(--wp-border); background: #0c0c0e; }
+
+/* Textarea */
+.wp-plain-textarea {
+  flex: 1; width: 100%; padding: 30px;
+  background: transparent; border: none; outline: none; resize: none;
+  color: #e4e4e7; font-family: 'JetBrains Mono', monospace;
+  font-size: 0.95rem; line-height: 1.6;
+}
+/* Scrollbars */
+.wp-plain-textarea::-webkit-scrollbar, .preview-scroll::-webkit-scrollbar { width: 6px; }
+.wp-plain-textarea::-webkit-scrollbar-thumb, .preview-scroll::-webkit-scrollbar-thumb { 
+  background: #27272a; border-radius: 4px; 
+}
+.preview-scroll { padding: 30px 40px; overflow-y: auto; height: 100%; }
+
+/* 5. Help Sidebar */
+.wp-help-sidebar {
+  position: absolute; top: 0; right: 0; bottom: 0;
+  width: 260px;
+  background: var(--wp-bg-panel);
+  border-left: 1px solid var(--wp-border);
+  display: flex; flex-direction: column;
+  z-index: 50;
+  box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+}
+.wp-help-header {
+  height: 48px; border-bottom: 1px solid var(--wp-border);
+  display: flex; align-items: center; justify-content: space-between; padding: 0 16px;
+}
+.wp-help-header button { background: none; border: none; color: #fff; cursor: pointer; }
+.wp-help-content { padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+.wp-help-item { display: flex; justify-content: space-between; align-items: center; }
+.wp-help-item .label { font-size: 0.75rem; color: var(--wp-text-muted); }
+.wp-help-item .syntax {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+  background: #1c1c1f; padding: 4px 8px; border-radius: 4px;
+  color: var(--wp-accent); border: 1px solid var(--wp-border);
+}
+
+/* 6. Footer */
+.wp-footer {
+  height: 36px; min-height: 36px; border-top: 1px solid var(--wp-border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px; font-size: 0.75rem; color: var(--wp-text-muted);
+  background: var(--wp-bg-panel);
+}
+.wp-stat-item strong { color: #fff; font-weight: 500; margin-left: 6px; }
+.wp-stat-item { display: inline-flex; margin-right: 16px; }
+.text-teal { color: var(--wp-accent); }
+
+/* --- MARKDOWN STYLING (Merged Fixes) --- */
+.wp-markdown-body { font-family: 'Inter', sans-serif; color: #d4d4d8; line-height: 1.7; }
+.wp-markdown-body h1 { font-size: 1.8rem; padding-bottom: 0.3em; border-bottom: 1px solid var(--wp-border); margin-top: 1em; color: #fff; }
+.wp-markdown-body h2 { font-size: 1.4rem; color: #fff; margin-top: 1.4em; }
+
+/* Kill Links */
+.wp-markdown-body h1 a, .wp-markdown-body h2 a, .wp-markdown-body h3 a, .wp-markdown-body h4 a {
+  pointer-events: none; cursor: text; text-decoration: none; border: none; color: inherit;
+}
+.wp-markdown-body h1 a svg, .wp-markdown-body h2 a svg { display: none !important; }
+
+/* Code Blocks */
+.wp-markdown-body pre {
+  background: #121214 !important; border: 1px solid #27272a !important;
+  border-radius: 8px !important; padding: 16px !important; margin: 1.2em 0;
+}
+.wp-markdown-body pre code {
+  background: transparent !important; color: #e4e4e7 !important;
+  font-family: 'JetBrains Mono', monospace !important; font-size: 0.9em;
+}
+/* Fix Pills */
+.wp-markdown-body pre span, .wp-markdown-body pre div { background: transparent !important; padding: 0 !important; }
+/* Inline Code */
+.wp-markdown-body :not(pre) > code {
+  background: rgba(255,255,255,0.06) !important; color: var(--wp-accent) !important;
+  padding: 2px 5px !important; border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace !important; font-size: 0.85em; border: 1px solid rgba(255,255,255,0.05);
+}
+/* Blockquotes */
+.wp-markdown-body blockquote {
+  border-left: 3px solid var(--wp-accent); margin: 1.5em 0; padding-left: 1em;
+  color: var(--wp-text-muted); font-style: italic;
+}
+/* Images */
+.wp-markdown-body img { max-width: 100%; border-radius: 8px; border: 1px solid var(--wp-border); }
+.wmde-markdown { background: transparent !important; }
+
+/* =========================================
+   MOBILE RESPONSIVENESS (The Critical Part)
+   ========================================= */
+@media (max-width: 768px) {
+  /* 1. Full Screen Overlay */
+  .wp-portal-overlay { padding: 0; background: #000; }
+  
+  /* 2. Full Height Modal (dvh handles mobile browser bars) */
+  .wp-portal-modal { 
+    width: 100%; height: 100dvh; max-width: none; 
+    border-radius: 0; border: none; 
+  }
+
+  /* 3. Compact Header */
+  .wp-header { padding: 0 12px; height: 56px; }
+  .mobile-hide { display: none !important; } /* Hide title, split btn, stats labels */
+  
+  .wp-view-toggle .toggle-label { display: none; } /* Hide toggle text, icons only */
+  .wp-view-toggle button { padding: 8px 12px; }
+  
+  .wp-btn-primary .btn-label { display: none; } /* Hide "Save" text, icon only */
+  .wp-btn-primary { padding: 8px; border-radius: 50%; } /* Round Save button */
+
+  /* 4. Toolbar adjustments */
+  .wp-toolbar-row { height: 52px; }
+  .wp-toolbar-group button { padding: 8px 12px; } /* Bigger touch targets */
+
+  /* 5. Workspace & Text Area */
+  .wp-plain-textarea {
+    padding: 20px;
+    font-size: 16px; /* CRITICAL: Prevents iOS zoom on input */
+  }
+  .preview-scroll { padding: 20px; }
+
+  /* 6. Mobile Sidebar (Full width) */
+  .wp-help-sidebar { width: 100%; }
+
+  /* 7. Footer */
+  .wp-footer { justify-content: center; gap: 20px; }
+}
+
+/* -----------------------------------------------------------------
+   FIX: Force Code Blocks to look like an Editor (Remove "Pills")
+   ----------------------------------------------------------------- */
+
+/* 1. Reset the container (The dark box) */
+.wp-markdown-body pre {
+  background: #18181b !important; /* Dark Zinc background */
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 8px !important;
+  padding: 16px !important;
+  margin: 1.5em 0 !important;
+  overflow-x: auto !important;
+  line-height: 1.6 !important;
+  box-shadow: none !important;
+}
+
+/* 2. Reset the text inside */
+.wp-markdown-body pre code {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  color: #e4e4e7 !important; /* Light text */
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.9em !important;
+  box-shadow: none !important;
+  display: inline-block !important; /* Ensure it flows correctly */
+  width: auto !important;
+}
+
+/* 3. THE CRITICAL FIX: Stop individual tokens from becoming pills */
+/* This targets the spans created by syntax highlighters */
+.wp-markdown-body pre span,
+.wp-markdown-body pre div,
+.wp-markdown-body code span {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+  display: inline !important; /* Forces them to sit on the same line */
+  color: inherit; /* Optional: lets you keep syntax colors if they exist */
+}
+
+/* 4. Fix Inline Code (the small code snippets in paragraphs) */
+/* We WANT these to be subtle pills, but small ones */
+.wp-markdown-body :not(pre) > code {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #2dd4bf !important; /* Teal accent */
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.85em !important;
+  border: 1px solid rgba(255,255,255,0.05) !important;
+  display: inline-block !important;
+}
+
+/* -----------------------------------------------------------------
+   FIX: Remove dashed lines/dots from Header Anchors
+   ----------------------------------------------------------------- */
+.wp-markdown-body h1 a,
+.wp-markdown-body h2 a,
+.wp-markdown-body h3 a,
+.wp-markdown-body h4 a,
+.wp-markdown-body h5 a,
+.wp-markdown-body h6 a {
+  border: none !important;
+  text-decoration: none !important;
+  color: inherit !important;
+  background: transparent !important;
+}
+
+/* -----------------------------------------------------------------
+   FIX: "Kill" Header Anchors
+   1. Hides the link icon.
+   2. Removes the dashed underline.
+   3. Makes the header unclickable (removes pointer cursor).
+   ----------------------------------------------------------------- */
+
+/* Target the link inside any heading */
+.wp-markdown-body h1 a,
+.wp-markdown-body h2 a,
+.wp-markdown-body h3 a,
+.wp-markdown-body h4 a,
+.wp-markdown-body h5 a,
+.wp-markdown-body h6 a {
+  /* Remove visual styling */
+  border: none !important;
+  text-decoration: none !important;
+  color: inherit !important;
+  background: transparent !important;
+  
+  /* Make it unclickable */
+  cursor: text !important;
+  pointer-events: none !important;
+}
+
+/* Hide the SVG Icon (the chain icon) if it exists */
+.wp-markdown-body h1 a svg,
+.wp-markdown-body h2 a svg,
+.wp-markdown-body h3 a svg,
+.wp-markdown-body h4 a svg,
+.wp-markdown-body h5 a svg,
+.wp-markdown-body h6 a svg {
+  display: none !important;
+}
+
+/* Ensure no pseudo-element icons appear */
+.wp-markdown-body h1 a::before,
+.wp-markdown-body h2 a::before,
+.wp-markdown-body h3 a::before,
+.wp-markdown-body h1 a::after,
+.wp-markdown-body h2 a::after,
+.wp-markdown-body h3 a::after {
+  display: none !important;
+  content: none !important;
+}

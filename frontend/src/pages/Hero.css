@@ -618,8 +618,8 @@ html {
 }
 
 .action-btn:hover {
-    color: var(--accent);
-    border-color: var(--accent);
+    color: #dcb313;
+    border-color: #dcb313;
 }
 
 /* Footer */

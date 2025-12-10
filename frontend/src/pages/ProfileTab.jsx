@@ -1,307 +1,274 @@
 import React from 'react';
+import { Link } from 'react-router-dom'; // <--- Import Link
 import { motion } from 'framer-motion';
-import { 
-  Mail, MapPin, Github, Linkedin, Globe,
-  Terminal, Briefcase, GraduationCap, Zap, Heart,
-  Code, TrendingUp, Compass, Camera, BookOpen, Music, Cpu,
-  Layers, Coffee, Layout, Box, Download
-} from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
+
+import { useQuery } from "@tanstack/react-query";
+import { getProfile } from "../api/public-api";
 
 import './ProfileTab.css';
-import ProfileImg from '../assets/Profile.png'
 
-/* --- DATA --- */
-
-const EXPERIENCE = [
-  {
-    role: "Product Engineer",
-    company: "Edgeverve",
-    date: "AUG 2025 - PRESENT",
-    desc: "Spearheading the development of next-gen AI modules. Optimizing microservices for high-throughput banking transactions."
-  },
-  {
-    role: "Intern",
-    company: "Infosys Finacle",
-    date: "FEB 2025 - JUL 2025",
-    desc: "Contributed to the core banking solution modernization. Migrated legacy UI components to Angular and React."
-  },
-  {
-    role: "Trainee",
-    company: "Infosys Finacle",
-    date: "MAR 2024 - JAN 2025",
-    desc: "Completed intensive training in full-stack development, cloud infrastructure, and agile methodologies."
+/* --- DYNAMIC ICON COMPONENT --- */
+const DynamicIcon = ({ name, size = 20, className }) => {
+  if (!name) return null;
+  let IconComponent = LucideIcons[name];
+  if (!IconComponent) {
+    const pascalName = name.charAt(0).toUpperCase() + name.slice(1);
+    IconComponent = LucideIcons[pascalName];
   }
-];
+  if (!IconComponent) return <LucideIcons.Box size={size} className={className} />;
+  return <IconComponent size={size} className={className} />;
+};
 
-const EDUCATION = [
-  {
-    degree: "B.Tech in Computer Science",
-    school: "Techno India NJR",
-    date: "2020 - 2024",
-    desc: "Specialized in Artificial Intelligence and Machine Learning. Led the college coding club."
+/* --- ANIMATION VARIANTS --- */
+const containerVars = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.08, delayChildren: 0.1 }
   }
-];
+};
 
-const SKILLS = [
-  { name: "React / Next", val: 90 },
-  { name: "Node.js", val: 85 },
-  { name: "System Design", val: 75 },
-  { name: "Python / AI", val: 80 }
-];
-
-const HOBBIES = [
-  { name: "Photography", icon: Camera },
-  { name: "Sketching", icon: Briefcase },
-  { name: "Sci-Fi Books", icon: BookOpen },
-  { name: "Indie Music", icon: Music },
-  { name: "Chess", icon: Cpu }
-];
-
-const TECH_STACK = [
-  { title: "MERN Stack", subtitle: "Full Stack Dev", icon: Layers },
-  { title: "Spring Boot / Batch", subtitle: "Enterprise Backend", icon: Coffee },
-  { title: "Figma", subtitle: "UI/UX Wireframing", icon: Layout },
-  { title: "Blender", subtitle: "3D Modeling", icon: Box }
-];
-
-function CloudIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24" height="24" viewBox="0 0 24 24"
-      fill="none" stroke="currentColor" strokeWidth="2"
-      strokeLinecap="round" strokeLinejoin="round"
-    >
-      <path d="M17.5 19c0-1.7-1.3-3-3-3h-1.1c-.1-2.9-2.4-5.2-5.3-5.3-2.7 0-5 2-5.4 4.7C.8 15.8 2.3 18.6 5 19h12.5z"/>
-    </svg>
-  );
-}
-
-const CURRENT_FOCUS = [
-  { name: "Generative AI", status: "Researching", icon: Zap },
-  { name: "System Architecture", status: "Building", icon: TrendingUp },
-  { name: "Cloud Native", status: "Deploying", icon: CloudIcon }
-];
-
-/* --- COMPONENT --- */
+const cardVars = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1, y: 0,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
+  }
+};
 
 const ProfileTab = () => {
+  const { data: apiResponse, isLoading, error } = useQuery({
+    queryKey: ['profile-data'],
+    queryFn: getProfile
+  });
+
+  if (isLoading) return <div className="profile-center"><div className="gold-loader"></div></div>;
+  if (error || !apiResponse?.data) return <div className="profile-center">Profile Data Unavailable</div>;
+
+  const profile = Array.isArray(apiResponse.data) ? apiResponse.data[0] : apiResponse.data;
+  const { header, stats, contact, resume, sections } = profile;
+  const { manifesto, experience, education, skills, hobbies, techStack, focus, worldview } = sections || {};
+
   return (
-    <div className="profile-container">
-      <div className="split-layout">
-        
-        {/* LEFT: ID CARD SIDEBAR */}
-        <aside className="id-sidebar">
-          <div className="profile-header">
-            <div className="avatar-frame">
-              <img 
-                src={ProfileImg}
-                alt="Profile" 
-                className="avatar-img"
-              />
-            </div>
-            <h1 className="user-name">Khilesh T.</h1>
-            <span className="user-role">FULL_STACK_ARCHITECT</span>
-          </div>
+    <div className="profile-page">
+      <div className="layout-wrapper">
 
-          <div className="id-stats">
-            <div className="stat-box">
-              <div className="stat-val">Lvl. 24</div>
-              <div className="stat-label">Experience</div>
-            </div>
-            <div className="stat-box">
-              <div className="stat-val">12+</div>
-              <div className="stat-label">Projects</div>
-            </div>
-          </div>
+        {/* --- LEFT: IDENTITY SIDEBAR --- */}
+        <aside className="sidebar">
 
-          <div className="contact-list">
-            <a href="#" className="contact-item">
-              <Mail size={18} /> khilesh@dev.com
-            </a>
-            <a href="#" className="contact-item">
-              <MapPin size={18} /> Udaipur, India
-            </a>
-            <a href="#" className="contact-item">
-              <Github size={18} /> /khilesh-dev
-            </a>
-            <a href="#" className="contact-item">
-              <Linkedin size={18} /> /in/khilesh
-            </a>
-            <a href="#" className="contact-item">
-              <Globe size={18} /> khilesh.dev
-            </a>
-          </div>
+          {/* --- NEW BACK BUTTON --- */}
+          <Link to="/" className="back-link">
+            <LucideIcons.ArrowLeft size={20} />
+            <span>Back to Hub</span>
+          </Link>
 
-          <button className="resume-btn">
-            <Download size={20} /> Download Resume
-          </button>
+          <motion.div
+            className="id-card"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            <div className="profile-header">
+              <div className="avatar-container">
+                <img src={header?.avatar} alt={header?.name} className="avatar-img" />
+              </div>
+              <h1 className="user-name">{header?.name}</h1>
+              <div className="user-role">{header?.role}</div>
+            </div>
+
+            <div className="divider"></div>
+
+            <div className="contact-links">
+              {contact?.map((item, idx) => (
+                <a key={idx} href={item.href} className="contact-row" target="_blank" rel="noreferrer">
+                  <span className="icon-wrapper"><DynamicIcon name={item.icon} size={18} /></span>
+                  <span className="link-text">{item.text}</span>
+                </a>
+              ))}
+            </div>
+
+            <div className="stats-grid">
+              {stats?.map((stat, idx) => (
+                <div key={idx} className="stat-cell">
+                  <div className="stat-value">{stat.value}</div>
+                  <div className="stat-label">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+
+            {resume && (
+              <a href={resume.href} className="resume-btn" target="_blank" rel="noreferrer">
+                {resume.label} <LucideIcons.ArrowUpRight size={18} />
+              </a>
+            )}
+          </motion.div>
         </aside>
 
-        {/* RIGHT: SCROLLABLE DOSSIER */}
-        <main className="dossier-content">
-          
-          {/* SECTION 1: MANIFESTO */}
-          <section className="section-block">
-            <div className="block-header">
-              <Terminal className="header-icon" size={32} />
-              <h2 className="header-title">Entity Core</h2>
-              <span className="header-id">SEC_01</span>
-            </div>
-            <p className="bio-text">
-              I am a <span className="bio-highlight">Product Engineer</span> with a passion for building scalable, user-centric digital ecosystems. 
-              My philosophy is simple: <span className="bio-highlight">Code is Art</span>. 
-              Whether I'm architecting a microservice or sketching a UI, I strive for precision, efficiency, and aesthetic excellence.
-              <br /><br />
-              Currently building the future of banking tech at Edgeverve.
-            </p>
-          </section>
+        {/* --- RIGHT: CONTENT GRID --- */}
+        <motion.main
+          className="content-area"
+          variants={containerVars}
+          initial="hidden"
+          animate="visible"
+        >
+          {/* ... Rest of your content ... */}
 
-          {/* SECTION 2: EXPERIENCE */}
-          <section className="section-block">
-            <div className="block-header">
-              <Briefcase className="header-icon" size={32} />
-              <h2 className="header-title">Op_History</h2>
-              <span className="header-id">SEC_02</span>
-            </div>
-            
-            <div className="timeline">
-              {EXPERIENCE.map((job, i) => (
-                <div key={i} className="timeline-item">
-                  <div className="timeline-dot" />
-                  <div className="timeline-card">
-                    <h3 className="t-role">
-                      {job.role} <span className="t-date">{job.date}</span>
-                    </h3>
-                    <div className="t-company">@ {job.company}</div>
-                    <p className="t-desc">{job.desc}</p>
+          {manifesto && (
+            <motion.div className="content-card full-width" variants={cardVars}>
+              <div className="card-header">
+                <LucideIcons.Terminal className="accent-icon" size={20} />
+                <h3>{manifesto.meta.title}</h3>
+              </div>
+              <div className="card-body">
+                {manifesto.paragraphs.map((p, i) => (
+                  <p key={i} className="body-text">{p}</p>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {techStack && (
+            <motion.div className="content-card span-2" variants={cardVars}>
+              <div className="card-header">
+                <LucideIcons.Cpu className="accent-icon" size={20} />
+                <h3>{techStack.meta.title}</h3>
+              </div>
+              <div className="tech-grid">
+                {techStack.items.map((tech, i) => (
+                  <div key={i} className="tech-item">
+                    <div className="tech-icon-box">
+                      <DynamicIcon name={tech.icon} size={20} />
+                    </div>
+                    <div className="tech-info">
+                      <span className="tech-title">{tech.title}</span>
+                      <span className="tech-sub">{tech.subtitle}</span>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </section>
+                ))}
+              </div>
+            </motion.div>
+          )}
 
-          {/* SECTION 3: EDUCATION */}
-          <section className="section-block">
-            <div className="block-header">
-              <GraduationCap className="header-icon" size={32} />
-              <h2 className="header-title">Academics</h2>
-              <span className="header-id">SEC_03</span>
-            </div>
-            
-            <div className="timeline">
-              {EDUCATION.map((edu, i) => (
-                <div key={i} className="timeline-item">
-                  <div className="timeline-dot" />
-                  <div className="timeline-card">
-                    <h3 className="t-role">
-                      {edu.degree} <span className="t-date">{edu.date}</span>
-                    </h3>
-                    <div className="t-company">{edu.school}</div>
-                    <p className="t-desc">{edu.desc}</p>
+          {focus && (
+            <motion.div className="content-card span-2" variants={cardVars}>
+              <div className="card-header">
+                <LucideIcons.Crosshair className="accent-icon" size={20} />
+                <h3>{focus.meta.title}</h3>
+              </div>
+              <div className="focus-list">
+                {focus.items.map((f, i) => (
+                  <div key={i} className="focus-row">
+                    <span className="status-dot"></span>
+                    <span className="focus-name">{f.name}</span>
+                    <span className="focus-badge">{f.status}</span>
                   </div>
-                </div>
-              ))}
-            </div>
-          </section>
+                ))}
+              </div>
+            </motion.div>
+          )}
 
-          {/* SECTION 4: SKILLS */}
-          <section className="section-block">
-            <div className="block-header">
-              <Zap className="header-icon" size={32} />
-              <h2 className="header-title">Capabilities</h2>
-              <span className="header-id">SEC_04</span>
-            </div>
-            <div className="skills-grid">
-              {SKILLS.map((skill, i) => (
-                <div key={i} className="skill-box">
-                  <div className="skill-val">{skill.val}%</div>
-                  <div className="skill-name">{skill.name}</div>
-                  <div className="skill-bar-bg">
-                    <motion.div 
-                      className="skill-bar-fill" 
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${skill.val}%` }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 1, delay: i * 0.1 }}
-                    />
+          {experience && (
+            <motion.div className="content-card span-2 tall-card" variants={cardVars}>
+              <div className="card-header">
+                <LucideIcons.Briefcase className="accent-icon" size={20} />
+                <h3>{experience.meta.title}</h3>
+              </div>
+              <div className="timeline-container">
+                {experience.items.map((job, i) => (
+                  <div key={i} className="timeline-block">
+                    <div className="timeline-line"></div>
+                    <div className="timeline-dot"></div>
+                    <div className="timeline-content">
+                      <div className="job-header">
+                        <h4 className="job-role">{job.role}</h4>
+                        <span className="job-date">{job.date}</span>
+                      </div>
+                      <div className="job-company">{job.company}</div>
+                      <p className="job-desc">{job.desc}</p>
+                    </div>
                   </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          <div className="col-stack span-2">
+
+            {education && (
+              <motion.div className="content-card" variants={cardVars}>
+                <div className="card-header">
+                  <LucideIcons.GraduationCap className="accent-icon" size={20} />
+                  <h3>{education.meta.title}</h3>
                 </div>
-              ))}
-            </div>
-          </section>
-
-          {/* SECTION 5: HOBBIES */}
-          <section className="section-block">
-            <div className="block-header">
-              <Heart className="header-icon" size={32} />
-              <h2 className="header-title">Peripherals</h2>
-              <span className="header-id">SEC_05</span>
-            </div>
-            <div className="hobbies-flex">
-              {HOBBIES.map((hobby, i) => (
-                <div key={i} className="hobby-pill">
-                  <hobby.icon size={18} /> {hobby.name}
+                <div className="edu-list">
+                  {education.items.map((edu, i) => (
+                    <div key={i} className="edu-item">
+                      <div className="edu-year">{edu.date}</div>
+                      <div className="edu-details">
+                        <div className="edu-degree">{edu.degree}</div>
+                        <div className="edu-school">{edu.school}</div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </section>
+              </motion.div>
+            )}
 
-          {/* SECTION 6: TECH STACK */}
-          <section className="section-block">
-            <div className="block-header">
-              <Code className="header-icon" size={32} />
-              <h2 className="header-title">Tech Arsenal</h2>
-              <span className="header-id">SEC_06</span>
-            </div>
-            <div className="tech-list">
-              {TECH_STACK.map((tech, i) => (
-                <div key={i} className="tech-card">
-                  <div className="tech-icon">
-                    <tech.icon size={24} />
-                  </div>
-                  <div>
-                    <div className="tech-title">{tech.title}</div>
-                    <div className="tech-desc">{tech.subtitle}</div>
-                  </div>
+            {skills && (
+              <motion.div className="content-card" variants={cardVars}>
+                <div className="card-header">
+                  <LucideIcons.Zap className="accent-icon" size={20} />
+                  <h3>{skills.meta.title}</h3>
                 </div>
-              ))}
-            </div>
-          </section>
-
-          {/* SECTION 7: CURRENT FOCUS */}
-          <section className="section-block">
-            <div className="block-header">
-              <TrendingUp className="header-icon" size={32} />
-              <h2 className="header-title">Active Protocols</h2>
-              <span className="header-id">SEC_07</span>
-            </div>
-            <div className="focus-grid">
-              {CURRENT_FOCUS.map((focus, i) => (
-                <div key={i} className="focus-card">
-                  <div className="focus-header">
-                    <focus.icon size={20} /> {focus.name}
-                  </div>
-                  <div className="focus-status">{focus.status}</div>
+                <div className="skills-list">
+                  {skills.items.map((s, i) => (
+                    <div key={i} className="skill-row">
+                      <div className="skill-meta">
+                        <span>{s.name}</span>
+                        <span className="skill-num">{s.val}%</span>
+                      </div>
+                      <div className="skill-track">
+                        <motion.div
+                          className="skill-fill"
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${s.val}%` }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 1, delay: i * 0.1 }}
+                        />
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </section>
+              </motion.div>
+            )}
 
-          {/* SECTION 8: VISION */}
-          <section className="section-block">
-            <div className="block-header">
-              <Compass className="header-icon" size={32} />
-              <h2 className="header-title">Worldview</h2>
-              <span className="header-id">SEC_08</span>
-            </div>
-            <p className="bio-text">
-              I see the world as a boundless playground for creation. I love the grind of working, the thrill of learning new things, and the freedom of exploring the unknown. To me, the journey never ends—there is simply too much in this world to see, build, and experience to ever stop moving.
-            </p>
-          </section>
+            {hobbies && (
+              <motion.div className="content-card" variants={cardVars}>
+                <div className="card-header">
+                  <LucideIcons.Heart className="accent-icon" size={20} />
+                  <h3>{hobbies.meta.title}</h3>
+                </div>
+                <div className="tags-cloud">
+                  {hobbies.items.map((h, i) => (
+                    <span key={i} className="tag">
+                      <DynamicIcon name={h.icon} size={14} /> {h.name}
+                    </span>
+                  ))}
+                </div>
+              </motion.div>
+            )}
 
-        </main>
+          </div>
+
+          {worldview && (
+            <motion.div className="content-card full-width worldview-card" variants={cardVars}>
+              <div className="quote-mark">“</div>
+              <p className="worldview-text">{worldview.text}</p>
+            </motion.div>
+          )}
+
+        </motion.main>
       </div>
     </div>
   );

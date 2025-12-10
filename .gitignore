@@ -10,3 +10,4 @@ npm-debug.log*
 frontend/.env
 frontend/.gitignore
 CODEDUMP
+coverage
