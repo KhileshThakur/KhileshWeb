@@ -714,4 +714,8 @@ html {
     .col-span-1 {
         grid-column: span 3;
     }
+
+    .icon-box {
+        padding: 0.05rem;
+    }
 }

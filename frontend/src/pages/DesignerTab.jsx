@@ -109,10 +109,10 @@ const GalleryView = () => {
                     </div>
                   </div>
                   {item.link && (
-                    <a 
-                      href={item.link} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
+                    <a
+                      href={item.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="gallery-link"
                     >
                       <LucideIcons.ExternalLink size={14} /> View Project
@@ -153,14 +153,14 @@ const ToolsView = () => {
           <div key={i} className="tool-icon-wrapper">
             {/* Pass the backend string (e.g., "PenTool") directly */}
             <DynamicIcon name={tool.icon} size={32} className="tool-icon" />
-            <div style={{ textAlign: "center" }} className="tool-tooltip">{tool.name}<br/><small style={{ color: "white", fontWeight: "thin" }}>{tool.level}</small></div>
+            <div style={{ textAlign: "center" }} className="tool-tooltip">{tool.name}<br /><small style={{ color: "white", fontWeight: "thin" }}>{tool.level}</small></div>
           </div>
         ))}
       </div>
 
       <div className="stats-grid" style={{
-          display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "2rem", 
-          marginTop: "3rem", width: "100%", maxWidth: "700px" 
+        display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem",
+        marginTop: "3rem", width: "100%", maxWidth: "700px"
       }}>
         {[
           { label: "Projects", val: "50+" },
@@ -168,8 +168,8 @@ const ToolsView = () => {
           { label: "Satisfaction", val: "100%" },
         ].map((stat, i) => (
           <div key={i} style={{
-              background: "rgba(255,255,255,0.03)", padding: "1.5rem", 
-              borderRadius: "12px", border: "1px solid var(--border)", textAlign: "center"
+            background: "rgba(255,255,255,0.03)", padding: "0.75rem",
+            borderRadius: "12px", border: "1px solid var(--border)", textAlign: "center"
           }}>
             <div style={{ fontSize: "2rem", fontWeight: 700, color: "var(--accent)" }}>{stat.val}</div>
             <div style={{ fontSize: "0.8rem", color: "#888", textTransform: "uppercase", marginTop: "0.5rem" }}>{stat.label}</div>
@@ -200,7 +200,7 @@ const StudioView = () => {
           transition={{ delay: i * 0.1 }}
         >
           <div className="service-icon-box">
-             {/* Dynamic Icon */}
+            {/* Dynamic Icon */}
             <DynamicIcon name={service.icon} size={24} />
           </div>
 
@@ -235,7 +235,7 @@ const DesignerTab = () => {
   };
 
   return (
-    <div className="designer-container">
+    <div id="designer-page" className="designer-container">
       <div className="overlay" />
 
       <div className="content-wrapper">
@@ -274,19 +274,40 @@ const DesignerTab = () => {
 
           {/* Navigation Buttons */}
           <div className={`nav-btn ${activeTab === "work" ? "active" : ""}`} onClick={() => setActiveTab("work")}>
-            <LucideIcons.Image size={24} className="nav-icon-mobile" />
+            <LucideIcons.Image size={24} className="nav-icon-mobile" style={{
+              position: "absolute",
+              left: "10px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              opacity: 0.2,
+            }}
+            />
             <div className="nav-label">Gallery</div>
             <div style={{ fontSize: "0.7rem", opacity: 0.7, marginTop: "4px" }} className="sidebar-footer">Visual Portfolio</div>
           </div>
 
           <div className={`nav-btn ${activeTab === "tools" ? "active" : ""}`} onClick={() => setActiveTab("tools")}>
-            <LucideIcons.PenTool size={24} className="nav-icon-mobile" />
+            <LucideIcons.PenTool style={{
+              position: "absolute",
+              left: "10px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              opacity: 0.2,
+            }}
+              size={24} className="nav-icon-mobile" />
             <div className="nav-label">Tools</div>
             <div style={{ fontSize: "0.7rem", opacity: 0.7, marginTop: "4px" }} className="sidebar-footer">Software Stack</div>
           </div>
 
           <div className={`nav-btn ${activeTab === "studio" ? "active" : ""}`} onClick={() => setActiveTab("studio")}>
-            <LucideIcons.Wand2 size={24} className="nav-icon-mobile" />
+            <LucideIcons.Wand2 style={{
+              position: "absolute",
+              left: "10px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              opacity: 0.2,
+            }}
+              size={24} className="nav-icon-mobile" />
             <div className="nav-label">Studio</div>
             <div style={{ fontSize: "0.7rem", opacity: 0.7, marginTop: "4px" }} className="sidebar-footer">Services & Offerings</div>
           </div>

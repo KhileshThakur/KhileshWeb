@@ -1,10 +1,13 @@
 // src/pages/DeveloperTab.jsx
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
-// 1. IMPORT ALL ICONS AS A NAMESPACE
+// 1. IMPORT LUCIDE (For UI and Services)
 import * as LucideIcons from "lucide-react";
+
+// 2. IMPORT ICONIFY (For Skills only)
+import { Icon } from "@iconify/react";
 
 import "./DeveloperTab.css";
 
@@ -15,26 +18,40 @@ import {
   getDeveloperServices,
 } from "../api/public-api";
 
-/* --- 2. DYNAMIC ICON COMPONENT --- */
+/* --- 3. HELPER COMPONENTS --- */
 
+// A. DynamicIcon (Kept for UI & Services - Lucide)
 const DynamicIcon = ({ name, size = 24, className }) => {
-  // Default fallback for Developer tab is usually Terminal or Code
   if (!name) return <LucideIcons.Terminal size={size} className={className} />;
 
   let IconComponent = LucideIcons[name];
 
-  // Handle case sensitivity (backend: "gitBranch" -> frontend: "GitBranch")
   if (!IconComponent) {
     const pascalName = name.charAt(0).toUpperCase() + name.slice(1);
     IconComponent = LucideIcons[pascalName];
   }
 
-  // Fallback if not found
   if (!IconComponent) {
     return <LucideIcons.Code2 size={size} className={className} />;
   }
 
   return <IconComponent size={size} className={className} />;
+};
+
+// B. SkillIcon (NEW: Specifically for Iconify in Skills section)
+const SkillIcon = ({ name, size = 24 }) => {
+  if (!name) return <LucideIcons.Code2 size={size} />;
+
+  return (
+    <Icon 
+      icon={name} 
+      width={size} 
+      height={size} 
+      onError={(e) => {
+        e.target.style.display = 'none';
+      }}
+    />
+  );
 };
 
 /* --- COMPONENTS --- */
@@ -49,8 +66,7 @@ const SkillModule = ({ name, iconName, level, xp }) => (
   >
     <div className="module-header">
       <div className="module-icon">
-        {/* Use DynamicIcon here */}
-        <DynamicIcon name={iconName} size={18} />
+        <SkillIcon name={iconName} size={28} />
       </div>
       <div className="module-title">{name}</div>
       <div className="xp-badge">{xp}</div>
@@ -77,7 +93,6 @@ const SkillsView = () => {
   if (isLoading) return <div className="skills-wrapper"><LucideIcons.Loader2 className="animate-spin" /> Loading skills...</div>;
   if (error) return <div className="skills-wrapper">Failed to load skills.</div>;
 
-  // group by category from backend
   const grouped = data.reduce((acc, skill) => {
     const cat = skill.category || "OTHER";
     if (!acc[cat]) acc[cat] = [];
@@ -116,7 +131,6 @@ const SkillsView = () => {
           <SkillModule
             key={skill._id || skill.id}
             name={skill.name}
-            // Pass the string from backend directly
             iconName={skill.icon} 
             level={skill.level}
             xp={skill.xp}
@@ -150,7 +164,6 @@ const ServicesView = () => {
           transition={{ delay: i * 0.1 }}
         >
           <div className="service-icon-box">
-            {/* Dynamic Icon Resolution */}
             <DynamicIcon name={service.icon} size={24} />
           </div>
 
@@ -172,6 +185,7 @@ const ServicesView = () => {
   );
 };
 
+/* --- UPDATED WORKVIEW SECTION --- */
 const WorkView = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["developer-projects"],
@@ -199,6 +213,7 @@ const WorkView = () => {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.4 }}
     >
+      {/* Project Sidebar List */}
       <div className="project-list">
         {projects.map((project, index) => (
           <div
@@ -245,6 +260,7 @@ const WorkView = () => {
         ))}
       </div>
 
+      {/* Project Details Area */}
       <div className="project-detail-wrapper">
         <AnimatePresence mode="wait">
           <motion.div
@@ -316,7 +332,7 @@ const WorkView = () => {
                   color: "#666",
                 }}
               >
-                ID: {activeProject._id} // STATUS: DEPLOYED
+                // Status: {activeProject.status}
               </p>
             </div>
 
@@ -340,6 +356,7 @@ const WorkView = () => {
               {activeProject.desc}
             </p>
 
+            {/* --- UPDATED BUTTONS SECTION --- */}
             <div
               style={{
                 display: "flex",
@@ -348,63 +365,74 @@ const WorkView = () => {
                 flexWrap: "wrap",
               }}
             >
-              {activeProject.link && (
+              {/* 1. Live Demo Button - mapped to liveLink */}
+              {activeProject.liveLink && (
                 <a
-                  href={activeProject.link}
+                  href={activeProject.liveLink}
                   target="_blank"
                   rel="noreferrer"
                   style={{ textDecoration: "none" }}
                 >
-                <button
-                  style={{
-                    background: "var(--accent)",
-                    color: "#000",
-                    border: "none",
-                    borderRadius: "4px",
-                    padding: "0.8rem 1.6rem",
-                    fontWeight: "bold",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                    cursor: "pointer",
-                    transition: "transform 0.2s",
-                  }}
-                  onMouseOver={(e) =>
-                    (e.currentTarget.style.transform = "translateY(-2px)")
-                  }
-                  onMouseOut={(e) =>
-                    (e.currentTarget.style.transform = "translateY(0)")
-                  }
-                >
-                  <LucideIcons.ExternalLink size={18} /> Live Demo
-                </button>
+                  <button
+                    style={{
+                      background: "var(--accent)",
+                      color: "#000",
+                      border: "none",
+                      borderRadius: "4px",
+                      padding: "0.8rem 1.6rem",
+                      fontWeight: "bold",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                      cursor: "pointer",
+                      transition: "transform 0.2s",
+                    }}
+                    onMouseOver={(e) =>
+                      (e.currentTarget.style.transform = "translateY(-2px)")
+                    }
+                    onMouseOut={(e) =>
+                      (e.currentTarget.style.transform = "translateY(0)")
+                    }
+                  >
+                    <LucideIcons.ExternalLink size={18} /> Live Demo
+                  </button>
                 </a>
               )}
-              
-              <button
-                style={{
-                  background: "transparent",
-                  color: "var(--text-main)",
-                  border: "1px solid #333",
-                  borderRadius: "4px",
-                  padding: "0.8rem 1.6rem",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.5rem",
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.borderColor = "var(--text-main)";
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.borderColor = "#333";
-                  e.currentTarget.style.transform = "translateY(0)";
-                }}
-              >
-                <LucideIcons.Github size={18} /> Source Code
-              </button>
+
+              {/* 2. Source Code Button - mapped to sourceLink */}
+              {activeProject.sourceLink && (
+                <a
+                  href={activeProject.sourceLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ textDecoration: "none" }}
+                >
+                  <button
+                    style={{
+                      background: "transparent",
+                      color: "var(--text-main)",
+                      border: "1px solid #333",
+                      borderRadius: "4px",
+                      padding: "0.8rem 1.6rem",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                      cursor: "pointer",
+                      transition: "all 0.2s",
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.borderColor = "var(--text-main)";
+                      e.currentTarget.style.transform = "translateY(-2px)";
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.borderColor = "#333";
+                      e.currentTarget.style.transform = "translateY(0)";
+                    }}
+                  >
+                    <LucideIcons.Github size={18} /> Source Code
+                  </button>
+                </a>
+              )}
             </div>
           </motion.div>
         </AnimatePresence>
@@ -432,7 +460,7 @@ const DeveloperTab = () => {
   };
 
   return (
-    <div className="dev-container">
+    <div id="developer-page" className="dev-container">
       <div className="overlay" />
 
       <div className="content-wrapper">

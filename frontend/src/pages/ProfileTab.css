@@ -1,7 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
 
-:root {
+/* --- SCOPING VARIABLES --- */
+/* We use the ID to define variables locally, not globally in :root */
+#profile-page {
   /* BACKGROUNDS */
   --bg-app: #050505;
   /* Deepest Black */
@@ -28,22 +30,21 @@
   --easing: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-* {
+#profile-page * {
   box-sizing: border-box;
 }
 
-.profile-page {
+#profile-page.profile-page {
   background-color: var(--bg-app);
   color: var(--txt-body);
   font-family: 'Inter', sans-serif;
   height: 100vh;
   width: 100vw;
-  overflow: hidden;
   display: flex;
   justify-content: center;
 }
 
-.profile-center {
+#profile-page .profile-center {
   height: 100vh;
   width: 100%;
   display: flex;
@@ -52,7 +53,7 @@
   color: var(--gold);
 }
 
-.gold-loader {
+#profile-page .gold-loader {
   width: 40px;
   height: 40px;
   border: 3px solid var(--border);
@@ -68,7 +69,7 @@
 }
 
 /* --- LAYOUT WRAPPER --- */
-.layout-wrapper {
+#profile-page .layout-wrapper {
   display: flex;
   height: 100%;
   width: 100%;
@@ -79,7 +80,7 @@
 }
 
 /* --- SIDEBAR --- */
-.sidebar {
+#profile-page .sidebar {
   width: 320px;
   flex-shrink: 0;
   height: 100%;
@@ -91,11 +92,11 @@
 }
 
 /* NEW: Back Button Styling */
-.sidebar-nav {
+#profile-page .sidebar-nav {
   width: 100%;
 }
 
-.back-link {
+#profile-page .back-link {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -110,13 +111,13 @@
   border-radius: 10px;
 }
 
-.back-link:hover {
+#profile-page .back-link:hover {
   color: var(--gold);
   transform: translateX(-4px);
 }
 
 /* Updated ID Card to take remaining height minus button */
-.id-card {
+#profile-page .id-card {
   flex: 1;
   /* Takes remaining space */
   background: var(--bg-card);
@@ -132,7 +133,7 @@
 }
 
 /* Avatar - Professional & Clean */
-.avatar-container {
+#profile-page .avatar-container {
   width: 140px;
   height: 140px;
   border-radius: 50%;
@@ -142,7 +143,7 @@
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent);
 }
 
-.avatar-img {
+#profile-page .avatar-img {
   width: 100%;
   height: 100%;
   border-radius: 50%;
@@ -150,11 +151,11 @@
   transition: transform 0.5s var(--easing);
 }
 
-.id-card:hover .avatar-img {
+#profile-page .id-card:hover .avatar-img {
   transform: scale(1.05);
 }
 
-.user-name {
+#profile-page .user-name {
   font-size: 1.8rem;
   font-weight: 700;
   color: var(--txt-head);
@@ -162,7 +163,7 @@
   letter-spacing: -0.02em;
 }
 
-.user-role {
+#profile-page .user-role {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.75rem;
   color: var(--gold);
@@ -174,7 +175,7 @@
   letter-spacing: 1px;
 }
 
-.divider {
+#profile-page .divider {
   width: 100%;
   height: 1px;
   background: var(--border);
@@ -182,14 +183,14 @@
 }
 
 /* Contact Links */
-.contact-links {
+#profile-page .contact-links {
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.contact-row {
+#profile-page .contact-row {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -201,26 +202,26 @@
   border: 1px solid transparent;
 }
 
-.contact-row:hover {
+#profile-page .contact-row:hover {
   background: var(--bg-card-hover);
   color: var(--txt-head);
   border-color: var(--border);
 }
 
-.icon-wrapper {
+#profile-page .icon-wrapper {
   color: var(--gold);
   display: flex;
   align-items: center;
   opacity: 0.8;
 }
 
-.link-text {
+#profile-page .link-text {
   font-size: 0.9rem;
   font-weight: 500;
 }
 
 /* Stats */
-.stats-grid {
+#profile-page .stats-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   width: 100%;
@@ -228,7 +229,7 @@
   margin: 32px 0;
 }
 
-.stat-cell {
+#profile-page .stat-cell {
   background: rgba(255, 255, 255, 0.02);
   border-radius: 12px;
   padding: 16px;
@@ -236,19 +237,19 @@
   transition: 0.3s;
 }
 
-.stat-cell:hover {
+#profile-page .stat-cell:hover {
   border-color: var(--border);
   background: rgba(255, 255, 255, 0.04);
 }
 
-.stat-value {
+#profile-page .stat-value {
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--txt-head);
   display: block;
 }
 
-.stat-label {
+#profile-page .stat-label {
   font-size: 0.7rem;
   color: var(--txt-dim);
   text-transform: uppercase;
@@ -257,7 +258,7 @@
 }
 
 /* Resume Button */
-.resume-btn {
+#profile-page .resume-btn {
   margin-top: auto;
   width: 100%;
   padding: 16px;
@@ -274,13 +275,13 @@
   font-size: 0.9rem;
 }
 
-.resume-btn:hover {
+#profile-page .resume-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 20px -5px var(--gold-glow);
 }
 
 /* --- CONTENT AREA (Grid) --- */
-.content-area {
+#profile-page .content-area {
   flex: 1;
   overflow-y: auto;
   /* Main Scroll */
@@ -293,7 +294,7 @@
 }
 
 /* --- BENTO CARD BASE --- */
-.content-card {
+#profile-page .content-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -305,28 +306,26 @@
   transition: border-color 0.3s, transform 0.3s;
 }
 
-.content-card:hover {
+#profile-page .content-card:hover {
   border-color: var(--border-light);
   transform: translateY(-2px);
   background: var(--bg-card-hover);
 }
 
-.full-width {
+#profile-page .full-width {
   grid-column: span 4;
 }
 
-.span-2 {
+#profile-page .span-2 {
   grid-column: span 2;
 }
 
-.tall-card {
+#profile-page .tall-card {
   grid-row: span 2;
 }
 
-/* Useful for experience */
-
 /* Header inside cards */
-.card-header {
+#profile-page .card-header {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -335,11 +334,11 @@
   border-bottom: 1px solid var(--border);
 }
 
-.accent-icon {
+#profile-page .accent-icon {
   color: var(--gold);
 }
 
-.card-header h3 {
+#profile-page .card-header h3 {
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--txt-dim);
@@ -348,19 +347,36 @@
   letter-spacing: 2px;
 }
 
+#profile-page .card-header-id {
+  color: var(--txt-dim);
+  margin-left: auto;
+  font-family: 'Space Grotesk';
+}
+
 /* 1. MANIFESTO */
-.body-text {
+#profile-page .body-text {
   font-size: 1.15rem;
   line-height: 1.8;
   color: var(--txt-body);
   margin-bottom: 16px;
 }
 
-.body-text:last-child {
+#profile-page .body-highlight {
+  padding: 0.5rem;
+  margin-right: 5px;
+  display: inline-flex;
+  border: 1px solid #000111;
+  background: #251f0e;
+  color: #eab308;
+  font-size: 0.75rem;
+  cursor: text;
+}
+
+#profile-page .body-text:last-child {
   margin-bottom: 0;
 }
 
-.bio-highlight {
+#profile-page .bio-highlight {
   color: var(--txt-head);
   font-weight: 600;
   text-decoration: underline;
@@ -369,13 +385,13 @@
 }
 
 /* 2. TECH STACK */
-.tech-grid {
+#profile-page .tech-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 16px;
 }
 
-.tech-item {
+#profile-page .tech-item {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -386,12 +402,12 @@
   transition: 0.2s;
 }
 
-.tech-item:hover {
+#profile-page .tech-item:hover {
   border-color: var(--border-light);
   background: rgba(255, 255, 255, 0.04);
 }
 
-.tech-icon-box {
+#profile-page .tech-icon-box {
   color: var(--gold);
   background: rgba(255, 255, 255, 0.03);
   width: 40px;
@@ -402,36 +418,36 @@
   justify-content: center;
 }
 
-.tech-title {
+#profile-page .tech-title {
   display: block;
   font-weight: 600;
   color: var(--txt-head);
   font-size: 0.95rem;
 }
 
-.tech-sub {
+#profile-page .tech-sub {
   font-size: 0.75rem;
   color: var(--txt-dim);
 }
 
 /* 3. EXPERIENCE TIMELINE */
-.timeline-container {
+#profile-page .timeline-container {
   display: flex;
   flex-direction: column;
 }
 
-.timeline-block {
+#profile-page .timeline-block {
   display: flex;
   gap: 24px;
   position: relative;
   padding-bottom: 32px;
 }
 
-.timeline-block:last-child {
+#profile-page .timeline-block:last-child {
   padding-bottom: 0;
 }
 
-.timeline-line {
+#profile-page .timeline-line {
   position: absolute;
   left: 6px;
   top: 8px;
@@ -440,11 +456,11 @@
   background: var(--border);
 }
 
-.timeline-block:last-child .timeline-line {
+#profile-page .timeline-block:last-child .timeline-line {
   display: none;
 }
 
-.timeline-dot {
+#profile-page .timeline-dot {
   width: 14px;
   height: 14px;
   border-radius: 50%;
@@ -455,45 +471,45 @@
   margin-top: 4px;
 }
 
-.timeline-content {
+#profile-page .timeline-content {
   flex: 1;
 }
 
-.job-header {
+#profile-page .job-header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   margin-bottom: 4px;
 }
 
-.job-role {
+#profile-page .job-role {
   font-size: 1.1rem;
   color: var(--txt-head);
   margin: 0;
   font-weight: 600;
 }
 
-.job-date {
+#profile-page .job-date {
   font-family: 'JetBrains Mono';
   font-size: 0.75rem;
   color: var(--txt-dim);
 }
 
-.job-company {
+#profile-page .job-company {
   color: var(--gold);
   font-size: 0.9rem;
   margin-bottom: 12px;
   font-weight: 500;
 }
 
-.job-desc {
+#profile-page .job-desc {
   font-size: 0.95rem;
   line-height: 1.6;
   color: var(--txt-dim);
 }
 
 /* 4. COL STACK (Skills/Edu grouping) */
-.col-stack {
+#profile-page .col-stack {
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -501,13 +517,13 @@
 }
 
 /* EDUCATION */
-.edu-list {
+#profile-page .edu-list {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.edu-item {
+#profile-page .edu-item {
   display: flex;
   gap: 16px;
   align-items: flex-start;
@@ -515,12 +531,12 @@
   border-bottom: 1px solid var(--border);
 }
 
-.edu-item:last-child {
+#profile-page .edu-item:last-child {
   border: none;
   padding-bottom: 0;
 }
 
-.edu-year {
+#profile-page .edu-year {
   font-family: 'JetBrains Mono';
   font-size: 0.75rem;
   color: var(--gold);
@@ -529,45 +545,50 @@
   flex-shrink: 0;
 }
 
-.edu-degree {
+#profile-page .edu-degree {
   font-weight: 600;
   color: var(--txt-head);
   font-size: 1rem;
 }
 
-.edu-school {
+#profile-page .edu-school {
+  font-size: 0.85rem;
+  color: var(--gold);
+  margin-top: 2px;
+}
+#profile-page .edu-desc{
   font-size: 0.85rem;
   color: var(--txt-dim);
   margin-top: 2px;
 }
 
 /* SKILLS */
-.skills-list {
+#profile-page .skills-list {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.skill-row {
+#profile-page .skill-row {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.skill-meta {
+#profile-page .skill-meta {
   display: flex;
   justify-content: space-between;
   font-size: 0.9rem;
   font-weight: 500;
 }
 
-.skill-num {
+#profile-page .skill-num {
   font-family: 'JetBrains Mono';
   color: var(--gold);
   font-size: 0.8rem;
 }
 
-.skill-track {
+#profile-page .skill-track {
   width: 100%;
   height: 6px;
   background: #222;
@@ -575,19 +596,19 @@
   overflow: hidden;
 }
 
-.skill-fill {
+#profile-page .skill-fill {
   height: 100%;
   background: var(--gold);
 }
 
 /* HOBBIES */
-.tags-cloud {
+#profile-page .tags-cloud {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
-.tag {
+#profile-page .tag {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -600,19 +621,19 @@
   transition: 0.2s;
 }
 
-.tag:hover {
+#profile-page .tag:hover {
   border-color: var(--gold);
   color: var(--txt-head);
 }
 
 /* FOCUS */
-.focus-list {
+#profile-page .focus-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.focus-row {
+#profile-page .focus-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -621,7 +642,7 @@
   border-radius: 8px;
 }
 
-.status-dot {
+#profile-page .status-dot {
   width: 8px;
   height: 8px;
   background: var(--gold);
@@ -629,26 +650,26 @@
   box-shadow: 0 0 8px var(--gold);
 }
 
-.focus-name {
+#profile-page .focus-name {
   font-weight: 500;
   font-size: 0.95rem;
 }
 
-.focus-badge {
+#profile-page .focus-badge {
   font-size: 0.75rem;
   color: var(--txt-dim);
   font-family: 'JetBrains Mono';
 }
 
 /* WORLDVIEW */
-.worldview-card {
+#profile-page .worldview-card {
   display: flex;
   gap: 24px;
   align-items: flex-start;
   background: linear-gradient(90deg, rgba(234, 179, 8, 0.05) 0%, transparent 100%);
 }
 
-.quote-mark {
+#profile-page .quote-mark {
   font-family: serif;
   font-size: 4rem;
   line-height: 1;
@@ -656,7 +677,7 @@
   opacity: 0.5;
 }
 
-.worldview-text {
+#profile-page .worldview-text {
   font-size: 1.25rem;
   font-style: italic;
   line-height: 1.6;
@@ -666,79 +687,89 @@
 
 /* --- RESPONSIVE --- */
 @media (max-width: 1200px) {
-  .layout-wrapper {
+  #profile-page .layout-wrapper {
     gap: 24px;
     padding: 24px;
   }
 
-  .content-area {
+  #profile-page .content-area {
     grid-template-columns: 1fr 1fr;
   }
 
-  .full-width,
-  .span-2 {
+  #profile-page .full-width,
+  #profile-page .span-2 {
     grid-column: span 2;
   }
 }
 
 @media (max-width: 900px) {
-  .profile-page {
+  #profile-page .profile-page {
     height: auto;
     overflow-y: auto;
   }
 
-  .layout-wrapper {
+  #profile-page .layout-wrapper {
     flex-direction: column;
     padding: 16px;
     gap: 24px;
   }
 
-  .sidebar {
+  #profile-page .sidebar {
     width: 100%;
     height: auto;
     overflow: visible;
   }
 
-  .content-area {
+  #profile-page .content-area {
     display: flex;
     flex-direction: column;
     overflow: visible;
     padding-right: 0;
   }
 
-  .id-card {
+  #profile-page .id-card {
     align-items: flex-start;
     text-align: left;
     padding: 24px;
   }
 
-  .profile-header {
-    display: flex;
+  #profile-page .profile-header {
+    display: grid;
     align-items: center;
-    gap: 20px;
+    gap: 10px;
+    margin: auto;
+    justify-items: anchor-center;
   }
 
-  .avatar-container {
+  #profile-page .job-role {
+    gap: 5px;
+  }
+
+  #profile-page .job-date {
+    text-align: right;
+  }
+
+  #profile-page .avatar-container {
     margin: 0;
     width: 80px;
     height: 80px;
   }
 
-  .user-role {
+  #profile-page .user-role {
     margin-top: 4px;
   }
 
-  .stats-grid {
+  #profile-page .stats-grid {
     display: none;
   }
 
   /* Hide stats on mobile */
 
-  .timeline-block {
+  #profile-page .timeline-block {
     gap: 16px;
   }
 
-  .timeline-dot {
+  #profile-page .timeline-dot {
     margin-top: 6px;
   }
 }

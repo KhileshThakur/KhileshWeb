@@ -1,7 +1,8 @@
+// src/pages/BloggerTab.jsx
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import MDEditor from '@uiw/react-md-editor'; // <--- NEW IMPORT
+import MDEditor from '@uiw/react-md-editor';
 
 // 1. Dynamic Icon Import
 import * as LucideIcons from 'lucide-react';
@@ -83,7 +84,7 @@ const RoadmapModal = ({ map, onClose }) => (
     exit={{ opacity: 0, x: '100%' }}
   >
     <div className="top-bar" style={{ padding: '1rem 2rem', background: '#030003', borderBottom: '1px solid #222' }}>
-      <button className="back-btn" onClick={onClose}><LucideIcons.ArrowLeft size={20} /></button>
+      <Link className="back-btn" onClick={onClose}><LucideIcons.ArrowLeft size={20} /></Link>
       <span style={{ marginLeft: '1rem', fontWeight: 600 }}>{map.title}</span>
     </div>
     <div className="modal-content">
@@ -203,11 +204,25 @@ const SnippetsView = () => {
   );
 };
 
+/* --- ARTICLES VIEW WITH SEARCH --- */
 const FeedView = ({ onSelect }) => {
+  const [searchQuery, setSearchQuery] = useState("");
+
   const { data: articles = [], isLoading, error } = useQuery({
     queryKey: ['blogger-articles'],
     queryFn: getBloggerArticles
   });
+
+  const filteredArticles = useMemo(() => {
+    if (!searchQuery) return articles;
+    const lowerQuery = searchQuery.toLowerCase();
+    
+    return articles.filter(article => 
+      article.title?.toLowerCase().includes(lowerQuery) ||
+      article.desc?.toLowerCase().includes(lowerQuery) ||
+      article.tags?.some(tag => tag.toLowerCase().includes(lowerQuery))
+    );
+  }, [articles, searchQuery]);
 
   if (isLoading) return <div className="loading-state"><LucideIcons.Loader2 className="animate-spin" /> Loading Articles...</div>;
   if (error) return <div className="error-state">Failed to load articles.</div>;
@@ -221,23 +236,50 @@ const FeedView = ({ onSelect }) => {
         </div>
         <div className="search-bar">
           <LucideIcons.Search size={18} color="#666" />
-          <input type="text" placeholder="Search articles..." className="search-input" />
+          <input 
+            type="text" 
+            placeholder="Search articles..." 
+            className="search-input"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
       </div>
+      
       <div className="grid-layout">
-        {articles.map((a, i) => (
-          <ArticleCard key={a.id || a._id || i} article={a} onClick={() => onSelect(a)} />
-        ))}
+        {filteredArticles.length > 0 ? (
+          filteredArticles.map((a, i) => (
+            <ArticleCard key={a.id || a._id || i} article={a} onClick={() => onSelect(a)} />
+          ))
+        ) : (
+          <div className="empty-search" style={{ gridColumn: "1/-1", textAlign: "center", color: "#666", padding: "2rem" }}>
+             No articles found matching "{searchQuery}"
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
+/* --- UPDATED: ROADMAPS VIEW WITH SEARCH --- */
 const RoadmapsView = ({ onSelect }) => {
+  const [searchQuery, setSearchQuery] = useState("");
+
   const { data: roadmaps = [], isLoading, error } = useQuery({
     queryKey: ['blogger-roadmaps'],
     queryFn: getBloggerRoadmaps
   });
+
+  // Filter Roadmaps
+  const filteredRoadmaps = useMemo(() => {
+    if (!searchQuery) return roadmaps;
+    const lowerQuery = searchQuery.toLowerCase();
+
+    return roadmaps.filter(map => 
+      map.title?.toLowerCase().includes(lowerQuery) || 
+      map.level?.toLowerCase().includes(lowerQuery)
+    );
+  }, [roadmaps, searchQuery]);
 
   if (isLoading) return <div className="loading-state"><LucideIcons.Loader2 className="animate-spin" /> Loading Roadmaps...</div>;
   if (error) return <div className="error-state">Failed to load roadmaps.</div>;
@@ -249,16 +291,34 @@ const RoadmapsView = ({ onSelect }) => {
           <h2 className="section-title">Roadmaps</h2>
           <p className="section-desc">Learning Paths</p>
         </div>
+        {/* ADDED SEARCH BAR */}
+        <div className="search-bar">
+          <LucideIcons.Search size={18} color="#666" />
+          <input 
+            type="text" 
+            placeholder="Search roadmaps..." 
+            className="search-input"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
       </div>
+      
       <div className="grid-layout">
-        {roadmaps.map((map, i) => (
-          <div key={map.id || map._id || i} className="knowledge-card roadmap-body" onClick={() => onSelect(map)}>
-            <LucideIcons.Map size={60} className="roadmap-icon-bg" />
-            <LucideIcons.Target size={40} color="var(--accent)" style={{ marginBottom: '1rem' }} />
-            <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'white', marginBottom: '0.5rem' }}>{map.title}</h3>
-            <div style={{ fontFamily: 'monospace', fontSize: '0.8rem', color: 'var(--accent)' }}>{map.level}</div>
+        {filteredRoadmaps.length > 0 ? (
+          filteredRoadmaps.map((map, i) => (
+            <div key={map.id || map._id || i} className="knowledge-card roadmap-body" onClick={() => onSelect(map)}>
+              <LucideIcons.Map size={60} className="roadmap-icon-bg" />
+              <LucideIcons.Target size={40} color="var(--accent)" style={{ marginBottom: '1rem' }} />
+              <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'white', marginBottom: '0.5rem' }}>{map.title}</h3>
+              <div style={{ fontFamily: 'monospace', fontSize: '0.8rem', color: 'var(--accent)' }}>{map.level}</div>
+            </div>
+          ))
+        ) : (
+          <div className="empty-search" style={{ gridColumn: "1/-1", textAlign: "center", color: "#666", padding: "2rem" }}>
+             No roadmaps found matching "{searchQuery}"
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
@@ -287,7 +347,7 @@ const BloggerTab = () => {
   };
 
   return (
-    <div className="blogger-container">
+    <div id="blogger-page" className="blogger-container">
       <div className="content-wrapper">
         
         {/* LEFT: CONTENT AREA */}
@@ -300,7 +360,7 @@ const BloggerTab = () => {
           <div className="top-bar">
             <Link className="back-btn" to={'/'}><LucideIcons.ArrowLeft size={20} /></Link>
             <div className="breadcrumbs">Terminal <span>/</span> Blogger <span>/</span> {activeTab.toUpperCase()}</div>
-            <div style={{display:'flex', gap:'0.5rem', marginRight:'1rem', marginLeft:'auto'}}>
+            <div style={{display:'flex', gap:'0.5rem', marginLeft:'auto'}}>
                <div style={{width:'8px', height:'8px', borderRadius:'50%', background:'#f472b6'}}></div>
                <div style={{width:'8px', height:'8px', borderRadius:'50%', background:'#333'}}></div>
             </div>

@@ -568,7 +568,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="admin-shell">
+    <div id="admin-page" className="admin-shell">
       <div className="mobile-header">
         <div className="brand">Admin<span className="text-teal">OS</span></div>
         <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="menu-btn"><LucideIcons.Menu /></button>

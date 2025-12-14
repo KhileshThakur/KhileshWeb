@@ -15,90 +15,148 @@ dotenv.config();
 // 1. PROFILE DATA (Singleton)
 const profileData = {
   header: {
-    name: 'Khilesh T.',
-    role: 'FULL_STACK_ARCHITECT',
-    // Using a placeholder image for seeding
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
+    name: 'Khilesh Thakur',
+    role: 'FULL STACK ARCHITECT',
+    avatar: 'https://res.cloudinary.com/ddzua6arv/image/upload/v1765533015/Profile_iewrwq.png',
   },
   stats: [
-    { label: 'Experience', value: 'Lvl. 24' },
+    { label: 'Experience', value: 'JL. 6' },
     { label: 'Projects', value: '12+' },
   ],
   contact: [
-    { icon: 'Mail', label: 'Email', text: 'khilesh@dev.com', href: 'mailto:khilesh@dev.com' },
-    { icon: 'MapPin', label: 'Location', text: 'Udaipur, India', href: 'http://maps.google.com' },
-    { icon: 'Github', label: 'GitHub', text: '/khilesh-dev', href: 'https://github.com/khilesh-dev' },
-    { icon: 'Linkedin', label: 'LinkedIn', text: '/in/khilesh', href: 'https://linkedin.com/in/khilesh' },
-    { icon: 'Globe', label: 'Website', text: 'khilesh.dev', href: 'https://khilesh.dev' },
+    { icon: 'Mail', label: 'Email', text: 'khilesh@dev.com', href: 'mailto:omthakur6640@gmail.com' },
+    { icon: 'MapPin', label: 'Location', text: 'Bangalore, India', href: 'https://www.google.com/maps/@12.8452076,77.6421572,15z?entry=ttu&g_ep=EgoyMDI1MTIwOS4wIKXMDSoASAFQAw%3D%3D' },
+    { icon: 'Github', label: 'GitHub', text: '/khilesh-dev', href: 'https://github.com/KhileshThakur' },
+    { icon: 'Linkedin', label: 'LinkedIn', text: '/in/khilesh', href: 'https://www.linkedin.com/in/khilesh-thakur-a09865228' },
+    { icon: 'Globe', label: 'Website', text: 'khilesh.dev', href: 'https://khileshweb.onrender.com/' },
   ],
   resume: {
     label: 'Download Resume',
-    href: '#',
+    href: 'https://drive.google.com/file/d/1IcP5bF1_K8WjgzI0a2KZC4WlK_y0t9K4/view?usp=drive_link',
   },
   sections: {
     manifesto: {
       meta: { id: 'SEC_01', title: 'Entity Core', icon: 'Terminal' },
       paragraphs: [
-        'I am a Product Engineer with a passion for building scalable, user-centric digital ecosystems. My philosophy is simple: Code is Art. Whether I am architecting a microservice or sketching a UI, I strive for precision, efficiency, and aesthetic excellence.',
-        'Currently building the future of banking tech at Edgeverve.',
+        'Powered by code, design, and a creative workflow that includes writing, sketching, and documenting tech. crafting systems, interfaces, and content that stay clean, intentional, and technically precise.',
+        'Strong ideas deserve clean execution and that’s my default.', 'Current Position: Product Enginner @Edgeverve'
       ],
-      highlights: ['Product Engineer', 'Code is Art'],
+      highlights: [
+        'Product Engineer',
+        'Design-Led',
+        'Digital Creator',
+        'Tech Writer'
+      ]
     },
     experience: {
-      meta: { id: 'SEC_02', title: 'Op_History', icon: 'Briefcase' },
+      meta: { id: 'SEC_04', title: 'Op_History', icon: 'Briefcase' },
       items: [
-        { role: 'Product Engineer', company: 'Edgeverve', date: 'AUG 2025 - PRESENT', desc: 'Spearheading the development of next-gen AI modules. Optimizing microservices for high-throughput banking transactions.' },
-        { role: 'Intern', company: 'Infosys Finacle', date: 'FEB 2025 - JUL 2025', desc: 'Contributed to the core banking solution modernization. Migrated legacy UI components to Angular and React.' },
-        { role: 'Trainee', company: 'Infosys Finacle', date: 'MAR 2024 - JAN 2025', desc: 'Completed intensive training in full-stack development, cloud infrastructure, and agile methodologies.' },
-      ],
+        {
+          role: 'Product Engineer',
+          company: 'Edgeverve',
+          date: 'AUG 2025 - PRESENT',
+          desc: 'Working on modern banking features, improving backend services, and helping move systems to more reliable and scalable setups.'
+        },
+        {
+          role: 'Intern',
+          company: 'Infosys Finacle',
+          date: 'FEB 2025 - JUL 2025',
+          desc: 'Worked on core banking modules and helped update parts of the old Finacle codebase used by large banks.'
+        },
+        {
+          role: 'Trainee',
+          company: 'Infosys Finacle',
+          date: 'MAR 2024 - JAN 2025',
+          desc: 'Trained in full-stack development, cloud basics, deployments, testing, and working with multiple programming languages through hands-on tasks.'
+        },
+      ]
     },
     education: {
-      meta: { id: 'SEC_03', title: 'Academics', icon: 'GraduationCap' },
+      meta: { id: 'SEC_05', title: 'Academics', icon: 'GraduationCap' },
       items: [
-        { degree: 'B.Tech in Computer Science', school: 'Techno India NJR', date: '2020 - 2024', desc: 'Specialized in Artificial Intelligence and Machine Learning. Led the college coding club.' },
-        { degree: 'B.Tech in Computer Science', school: 'Techno India NJR', date: '2020 - 2024', desc: 'Specialized in Artificial Intelligence and Machine Learning. Led the college coding club.' },
-        { degree: 'B.Tech in Computer Science', school: 'Techno India NJR', date: '2020 - 2024', desc: 'Specialized in Artificial Intelligence and Machine Learning. Led the college coding club.' }
-      ],
+        {
+          degree: 'B.Tech in Computer Science',
+          school: 'D. Y. Patil Institute of Technology - Pimpri, Pune',
+          date: '2021 - 2025',
+          desc: 'Graduated with a 9.32 CGPA. Ranked 2nd in the first year with a 9.98 SGPA. Focused on web development along with ML, data structures, software engineering, HCI, cybersecurity, and blockchain.'
+        },
+        {
+          degree: 'HSC - Maharashtra State Board',
+          school: 'Dhote Bandhu Science College, Gondia',
+          date: '2019 - 2020',
+          desc: 'Scored 85.85% with 100/100 in Mathematics. Ranked in the top 1% of the college. Subjects included Mathematics, Physics, Chemistry, Biology, English, and Hindi.'
+        },
+        {
+          degree: 'SSC - Maharashtra State Board',
+          school: 'Saraswati Vidyalaya - Goregaon, Gondia',
+          date: '2017 - 2018',
+          desc: 'Scored 91% with 100/100 in Mathematics. Ranked 1st in school. Subjects included Mathematics, Science, Social Science, English, Hindi, and Marathi.'
+        }
+      ]
     },
     skills: {
-      meta: { id: 'SEC_04', title: 'Capabilities', icon: 'Zap' },
+      meta: { id: 'SEC_06', title: 'Capabilities', icon: 'Zap' },
       items: [
-        { name: 'React / Next', val: 90 },
-        { name: 'Node.js', val: 85 },
-        { name: 'System Design', val: 75 },
-        { name: 'Python / AI', val: 80 },
+        { name: 'React', val: 75 },
+        { name: 'Node.js', val: 95 },
+        { name: 'Spring Boot', val: 65 },
+        { name: 'Canva / Figma', val: 90 },
       ],
     },
     hobbies: {
-      meta: { id: 'SEC_05', title: 'Peripherals', icon: 'Heart' },
+      meta: { id: 'SEC_07', title: 'Peripherals', icon: 'Heart' },
       items: [
-        { name: 'Photography', icon: 'Camera' },
+        { name: 'Writting', icon: 'BookMarked' },
         { name: 'Sketching', icon: 'PenTool' },
-        { name: 'Sci-Fi Books', icon: 'BookOpen' },
-        { name: 'Indie Music', icon: 'Music' },
-        { name: 'Chess', icon: 'Cpu' },
+        { name: 'Cooking', icon: 'ChefHat' },
+        { name: 'Movies', icon: 'Clapperboard' },
+        { name: 'Indie Music', icon: 'ListMusic' },
+        { name: 'Trekking', icon: 'MountainSnow' },
+        { name: 'Gaming', icon: 'Gamepad2' },
       ],
     },
     techStack: {
-      meta: { id: 'SEC_06', title: 'Tech Arsenal', icon: 'Code' },
+      meta: { id: 'SEC_02', title: 'Tech Arsenal', icon: 'Code' },
       items: [
-        { title: 'MERN Stack', subtitle: 'Full Stack Dev', icon: 'Layers' },
-        { title: 'Spring Boot', subtitle: 'Enterprise Backend', icon: 'Coffee' },
-        { title: 'Figma', subtitle: 'UI/UX Wireframing', icon: 'Layout' },
-        { title: 'Blender', subtitle: '3D Modeling', icon: 'Box' },
-      ],
+        {
+          title: 'MERN Stack',
+          subtitle: 'Full-Stack Web Development',
+          icon: 'Layers'
+        },
+        {
+          title: 'Java Development',
+          subtitle: 'Spring Boot, Microservices & Frameworks',
+          icon: 'Leaf'
+        },
+        {
+          title: 'Figma',
+          subtitle: 'UI/UX Design & Prototyping',
+          icon: 'Figma'
+        },
+        {
+          title: 'Software Testing',
+          subtitle: 'Unit & Integration Testing, Test Coverage',
+          icon: 'FlaskConical'
+        },
+        {
+          title: 'Cloud & Containers',
+          subtitle: 'Kubernetes & Docker Basics',
+          icon: 'CloudCog'
+        },
+      ]
     },
     focus: {
-      meta: { id: 'SEC_07', title: 'Active Protocols', icon: 'TrendingUp' },
+      meta: { id: 'SEC_03', title: 'Active Protocols', icon: 'TrendingUp' },
       items: [
-        { name: 'Generative AI', status: 'Researching', icon: 'Zap' },
-        { name: 'System Architecture', status: 'Building', icon: 'TrendingUp' },
-        { name: 'Cloud Native', status: 'Deploying', icon: 'Cloud' },
-      ],
+        { name: 'DS & ML', status: 'Practicing', icon: 'BrainCircuit' },
+        { name: 'Generative AI', status: 'Researching', icon: 'Sparkles' },
+        { name: 'System Design', status: 'Building', icon: 'MonitorCog' },
+        { name: 'DevOps & CI/CD', status: 'Automating', icon: 'Workflow' },
+      ]
     },
     worldview: {
       meta: { id: 'SEC_08', title: 'Worldview', icon: 'Compass' },
-      text: 'I see the world as a boundless playground for creation. I love the grind of working, the thrill of learning new things, and the freedom of exploring the unknown. To me, the journey never ends—there is simply too much in this world to see, build, and experience to ever stop moving.',
+      text: `The world is my sandbox. I’m drawn to the new, the crazy, and the cool—whether it's cutting-edge tech or beautiful design. I thrive on the grind and the freedom of exploration. But I know I've barely scratched the surface; I’m currently playing in a pond, chasing the river to reach the ocean. The journey never ends because there’s just too much cool stuff to build to ever stand still.`
     },
   },
 };
@@ -106,77 +164,78 @@ const profileData = {
 // 2. DEVELOPER DATA
 const skills = [
   // --- LANGUAGES ---
-  { category: "LANGUAGES", name: "JavaScript (ES6+)", icon: "Code2", level: 5, xp: "6 Yrs" },
-  { category: "LANGUAGES", name: "TypeScript", icon: "Hash", level: 5, xp: "4 Yrs" },
-  { category: "LANGUAGES", name: "Python", icon: "Terminal", level: 4, xp: "3 Yrs" },
-  { category: "LANGUAGES", name: "Go (Golang)", icon: "Code2", level: 3, xp: "2 Yrs" },
-  { category: "LANGUAGES", name: "Rust", icon: "Settings", level: 2, xp: "1 Yr" },
-  { category: "LANGUAGES", name: "SQL (Postgres)", icon: "Database", level: 4, xp: "4 Yrs" },
-  { category: "LANGUAGES", name: "GraphQL", icon: "Share2", level: 4, xp: "3 Yrs" },
+  { category: "LANGUAGES", name: "Java", icon: "skill-icons:java-dark", level: 4, xp: "2 Yrs" },
+  { category: "LANGUAGES", name: "Python", icon: "skill-icons:python-dark", level: 4, xp: "2 Yrs" },
+  { category: "LANGUAGES", name: "C", icon: "skill-icons:c", level: 2, xp: "2 Yrs" },
+  { category: "LANGUAGES", name: "C++", icon: "skill-icons:cpp", level: 3, xp: "3 Yrs" },
+  { category: "LANGUAGES", name: "JavaScript", icon: "skill-icons:javascript", level: 4, xp: "4 Yrs" },
+  { category: "LANGUAGES", name: "PHP", icon: "skill-icons:php-dark", level: 2, xp: "1 Yrs" },
+  { category: "LANGUAGES", name: "HTML", icon: "skill-icons:html", level: 5, xp: "4 Yrs" },
+  { category: "LANGUAGES", name: "CSS", icon: "skill-icons:css", level: 5, xp: "4 Yrs" },
 
-  // --- FRAMEWORKS ---
-  { category: "FRAMEWORKS", name: "React 18", icon: "Globe", level: 5, xp: "5 Yrs" },
-  { category: "FRAMEWORKS", name: "Next.js 14", icon: "Globe", level: 5, xp: "3 Yrs" },
-  { category: "FRAMEWORKS", name: "Node.js", icon: "Server", level: 5, xp: "5 Yrs" },
-  { category: "FRAMEWORKS", name: "Express", icon: "Server", level: 5, xp: "5 Yrs" },
-  { category: "FRAMEWORKS", name: "Tailwind CSS", icon: "Layout", level: 5, xp: "4 Yrs" },
-  { category: "FRAMEWORKS", name: "NestJS", icon: "Box", level: 4, xp: "2 Yrs" },
-  { category: "FRAMEWORKS", name: "Three.js", icon: "Box", level: 3, xp: "1 Yr" },
-  { category: "FRAMEWORKS", name: "React Native", icon: "Smartphone", level: 4, xp: "2 Yrs" },
+  // --- FRAMEWORKS & LIBS ---
+  { category: "FRAMEWORKS & LIBS", name: "React", icon: "skill-icons:react-dark", level: 4, xp: "3 Yrs" },
+  { category: "FRAMEWORKS & LIBS", name: "Node.js", icon: "skill-icons:nodejs-dark", level: 4, xp: "3 Yrs" },
+  { category: "FRAMEWORKS & LIBS", name: "Express", icon: "skill-icons:expressjs-dark", level: 4, xp: "3 Yrs" },
+  { category: "FRAMEWORKS & LIBS", name: "Spring Boot", icon: "devicon:spring", level: 3, xp: "1 Yrs" },
+  { category: "FRAMEWORKS & LIBS", name: "Bootstrap", icon: "skill-icons:bootstrap", level: 5, xp: "3 Yrs" },
+  { category: "FRAMEWORKS & LIBS", name: "Pug", icon: "skill-icons:pug-dark", level: 3, xp: "2 Yrs" },
+  { category: "FRAMEWORKS & LIBS", name: "Socket.io", icon: "logos:socket-io", level: 2, xp: "1 Yrs" },
+  { category: "FRAMEWORKS & LIBS", name: "Mongoose", icon: "devicon:mongoose", level: 4, xp: "3 Yrs" },
 
-  // --- TOOLS ---
-  { category: "TOOLS", name: "Git / GitHub", icon: "GitBranch", level: 5, xp: "6 Yrs" },
-  { category: "TOOLS", name: "Docker", icon: "Layers", level: 4, xp: "3 Yrs" },
-  { category: "TOOLS", name: "Kubernetes", icon: "Cloud", level: 3, xp: "2 Yrs" },
-  { category: "TOOLS", name: "AWS (EC2, S3)", icon: "Cloud", level: 4, xp: "3 Yrs" },
-  { category: "TOOLS", name: "Redis", icon: "Database", level: 4, xp: "3 Yrs" },
-  { category: "TOOLS", name: "Figma", icon: "Figma", level: 4, xp: "4 Yrs" },
-  { category: "TOOLS", name: "Linux/Bash", icon: "Terminal", level: 4, xp: "5 Yrs" },
-  { category: "TOOLS", name: "Jest / Testing", icon: "CheckCircle", level: 4, xp: "3 Yrs" },
+  // --- DATABASES ---
+  { category: "DATABASES", name: "MySQL", icon: "skill-icons:mysql-dark", level: 4, xp: "4 Yrs" },
+  { category: "DATABASES", name: "PostgreSQL", icon: "skill-icons:postgresql-dark", level: 4, xp: "3 Yrs" },
+  { category: "DATABASES", name: "MongoDB", icon: "skill-icons:mongodb", level: 4, xp: "3 Yrs" },
+
+  // --- DEVOPS & TOOLS ---
+  { category: "DEVOPS & TOOLS", name: "Git", icon: "skill-icons:git", level: 4, xp: "3 Yrs" },
+  { category: "DEVOPS & TOOLS", name: "GitHub", icon: "skill-icons:github-dark", level: 5, xp: "3 Yrs" },
+  { category: "DEVOPS & TOOLS", name: "GitHub Actions", icon: "skill-icons:githubactions-dark", level: 2, xp: "1 Yrs" },
+  { category: "DEVOPS & TOOLS", name: "Docker", icon: "skill-icons:docker", level: 2, xp: "1 Yrs" },
+  { category: "DEVOPS & TOOLS", name: "Kubernetes", icon: "skill-icons:kubernetes", level: 2, xp: "1 Yrs" },
+  { category: "DEVOPS & TOOLS", name: "Postman", icon: "skill-icons:postman", level: 5, xp: "3 Yrs" },
+  { category: "DEVOPS & TOOLS", name: "Vite", icon: "skill-icons:vite-dark", level: 4, xp: "2 Yrs" },
+  { category: "DEVOPS & TOOLS", name: "NPM", icon: "skill-icons:npm-dark", level: 4, xp: "3 Yrs" },
+  { category: "DEVOPS & TOOLS", name: "Yarn", icon: "skill-icons:yarn-dark", level: 3, xp: "3 Yrs" },
+  { category: "DEVOPS & TOOLS", name: "Linux/Unix", icon: "skill-icons:linux-dark", level: 3, xp: "2 Yrs" },
+  { category: "TESTING", name: "Jest", icon: "skill-icons:jest", level: 3, xp: "1 Yrs" },
+  { category: "TESTING", name: "JUnit", icon: "devicon:junit", level: 3, xp: "1 Yrs" },
+  { category: "TESTING", name: "JaCoCo", icon: "vscode-icons:folder-type-coverage", level: 3, xp: "1 Yrs" },
+
+  // --- PLATFORMS & IDE ---
+  { category: "PLATFORMS & IDE", name: "VS Code", icon: "skill-icons:vscode-dark", level: 5, xp: "5 Yrs" },
+  { category: "PLATFORMS & IDE", name: "IntelliJ", icon: "skill-icons:idea-dark", level: 4, xp: "1 Yrs" },
+  { category: "PLATFORMS & IDE", name: "Eclipse", icon: "skill-icons:eclipse-dark", level: 3, xp: "2 Yrs" },
+  { category: "PLATFORMS & IDE", name: "Figma", icon: "skill-icons:figma-dark", level: 5, xp: "3 Yrs" },
+  { category: "PLATFORMS & IDE", name: "Canva", icon: "devicon:canva", level: 4, xp: "4 Yrs" },
+  { category: "PLATFORMS & IDE", name: "Netlify", icon: "skill-icons:netlify-dark", level: 3, xp: "3 Yrs" },
+  { category: "PLATFORMS & IDE", name: "Vercel", icon: "skill-icons:vercel-dark", level: 4, xp: "3 Yrs" },
+  { category: "PLATFORMS & IDE", name: "Render", icon: "simple-icons:render", level: 5, xp: "3 Yrs" },
+  { category: "PLATFORMS & IDE", name: "Google Apps Script", icon: "logos:google-developers", level: 3, xp: "2 Yrs" },
+  { category: "PLATFORMS & IDE", name: "MS Office", icon: "logos:microsoft-icon", level: 5, xp: "8 Yrs" }
 ];
 
 const projects = [
   {
-    title: "Lumina E-Commerce",
-    desc: "A headless e-commerce solution featuring real-time inventory tracking, Stripe payments, and a custom CMS for product management.",
-    tech: ["Next.js", "TypeScript", "Prisma", "Stripe"],
-    year: "2024",
-    image: "https://images.unsplash.com/photo-1523474253046-8cd2748b5fd2?auto=format&fit=crop&q=80&w=800"
-  },
-  {
-    title: "Nexus AI Chat",
-    desc: "An intelligent support assistant that uses RAG (Retrieval-Augmented Generation) to answer user queries based on custom documentation.",
-    tech: ["Python", "LangChain", "OpenAI", "Pinecone"],
-    year: "2024",
-    image: "https://images.unsplash.com/photo-1676299081847-824916de030a?auto=format&fit=crop&q=80&w=800"
-  },
-  {
-    title: "CoinDash Crypto",
-    desc: "A high-performance dashboard for tracking 500+ cryptocurrencies with WebSocket integration for live price updates.",
-    tech: ["React", "Redux Toolkit", "WebSockets", "Recharts"],
-    year: "2023",
-    image: "https://images.unsplash.com/photo-1642104704074-907c0698cbd9?auto=format&fit=crop&q=80&w=800"
-  },
-  {
-    title: "TaskFlow Pro",
-    desc: "A collaborative project management tool similar to Trello, featuring drag-and-drop kanban boards and team permissions.",
-    tech: ["Vue.js", "Firebase", "Tailwind"],
-    year: "2023",
-    image: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&q=80&w=800"
-  },
-  {
-    title: "DevSocial",
-    desc: "A social network specifically for developers to share code snippets and collaborate on open-source ideas.",
-    tech: ["MERN Stack", "JWT", "Cloudinary"],
+    title: "CS Realm",
+    desc: "A library management system with CRUD operations, allowing users to book and return books, featuring separate admin and user sections.",
+    tech: ["Node", "Express", "Pug", "MongoDB"],
     year: "2022",
-    image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800"
+    image: "https://res.cloudinary.com/ddzua6arv/image/upload/v1743332358/uploads/dpgmhie19yizkaidwnvq.png",
+    sourceLink: "https://github.com/KhileshThakur/CS_Realm",
+    liveLink: "https://cs-realm.onrender.com/",
+    status: "Deployed"
   },
   {
-    title: "HealthTrack",
-    desc: "Mobile application for tracking workouts and nutrition plans with Apple Health integration.",
-    tech: ["React Native", "Expo", "Node.js"],
-    year: "2022",
-    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=800"
+    title: "Uploader",
+    desc: "A file uploader that generates shareable links using Cloudinary, built with React, Node.js, and MongoDB.",
+    tech: ["React", "Node", "MongoDB", "Cloudinary", "Multer"],
+    year: "2024",
+    image: "https://res.cloudinary.com/ddzua6arv/image/upload/v1743332931/uploads/necd63dlqm4ngzqtive0.png",
+    sourceLink: "https://github.com/KhileshThakur/Uploader-frontend",
+    liveLink: "https://uploader-frontend-td8x.onrender.com/",
+    status: "Deployed"
   }
 ];
 

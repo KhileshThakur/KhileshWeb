@@ -226,7 +226,7 @@ const CreatorTab = () => {
   };
 
   return (
-    <div className="creator-container">
+    <div id="creator-page" className="creator-container">
       <div className="content-wrapper">
         
         {/* LEFT: CONTENT AREA */}
@@ -238,7 +238,7 @@ const CreatorTab = () => {
             <div className="breadcrumbs">
               Studio <span>/</span> Creator <span>/</span> {activeTab}
             </div>
-            <div style={{display:'flex', gap:'0.5rem', marginRight:'1rem', marginLeft:'auto'}}>
+            <div style={{display:'flex', gap:'0.5rem', marginLeft:'auto'}}>
                <div style={{width:'8px', height:'8px', borderRadius:'50%', background:'var(--accent)'}}></div>
                <div style={{width:'8px', height:'8px', borderRadius:'50%', background:'#333'}}></div>
             </div>

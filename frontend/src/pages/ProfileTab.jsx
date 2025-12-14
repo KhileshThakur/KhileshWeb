@@ -51,7 +51,7 @@ const ProfileTab = () => {
   const { manifesto, experience, education, skills, hobbies, techStack, focus, worldview } = sections || {};
 
   return (
-    <div className="profile-page">
+    <div id="profile-page" className="profile-page">
       <div className="layout-wrapper">
 
         {/* --- LEFT: IDENTITY SIDEBAR --- */}
@@ -119,10 +119,14 @@ const ProfileTab = () => {
               <div className="card-header">
                 <LucideIcons.Terminal className="accent-icon" size={20} />
                 <h3>{manifesto.meta.title}</h3>
+                <span className='card-header-id'>{manifesto.meta.id}</span>
               </div>
               <div className="card-body">
                 {manifesto.paragraphs.map((p, i) => (
                   <p key={i} className="body-text">{p}</p>
+                ))}
+                {manifesto.highlights.map((p, i) => (
+                  <button key={i} className="body-highlight">{p}</button>
                 ))}
               </div>
             </motion.div>
@@ -133,6 +137,7 @@ const ProfileTab = () => {
               <div className="card-header">
                 <LucideIcons.Cpu className="accent-icon" size={20} />
                 <h3>{techStack.meta.title}</h3>
+                <span className='card-header-id'>{techStack.meta.id}</span>
               </div>
               <div className="tech-grid">
                 {techStack.items.map((tech, i) => (
@@ -155,6 +160,7 @@ const ProfileTab = () => {
               <div className="card-header">
                 <LucideIcons.Crosshair className="accent-icon" size={20} />
                 <h3>{focus.meta.title}</h3>
+                <span className='card-header-id'>{focus.meta.id}</span>
               </div>
               <div className="focus-list">
                 {focus.items.map((f, i) => (
@@ -173,6 +179,7 @@ const ProfileTab = () => {
               <div className="card-header">
                 <LucideIcons.Briefcase className="accent-icon" size={20} />
                 <h3>{experience.meta.title}</h3>
+                <span className='card-header-id'>{experience.meta.id}</span>
               </div>
               <div className="timeline-container">
                 {experience.items.map((job, i) => (
@@ -200,6 +207,7 @@ const ProfileTab = () => {
                 <div className="card-header">
                   <LucideIcons.GraduationCap className="accent-icon" size={20} />
                   <h3>{education.meta.title}</h3>
+                  <span className='card-header-id'>{education.meta.id}</span>
                 </div>
                 <div className="edu-list">
                   {education.items.map((edu, i) => (
@@ -208,6 +216,7 @@ const ProfileTab = () => {
                       <div className="edu-details">
                         <div className="edu-degree">{edu.degree}</div>
                         <div className="edu-school">{edu.school}</div>
+                        <div className="edu-desc">{edu.desc}</div>
                       </div>
                     </div>
                   ))}
@@ -220,6 +229,7 @@ const ProfileTab = () => {
                 <div className="card-header">
                   <LucideIcons.Zap className="accent-icon" size={20} />
                   <h3>{skills.meta.title}</h3>
+                  <span className='card-header-id'>{skills.meta.id}</span>
                 </div>
                 <div className="skills-list">
                   {skills.items.map((s, i) => (
@@ -248,6 +258,7 @@ const ProfileTab = () => {
                 <div className="card-header">
                   <LucideIcons.Heart className="accent-icon" size={20} />
                   <h3>{hobbies.meta.title}</h3>
+                  <span className='card-header-id'>{hobbies.meta.id}</span>
                 </div>
                 <div className="tags-cloud">
                   {hobbies.items.map((h, i) => (

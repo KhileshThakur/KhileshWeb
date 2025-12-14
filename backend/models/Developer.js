@@ -4,8 +4,7 @@ const SkillSchema = new mongoose.Schema(
   {
     category: {
       type: String,
-      required: true,
-      enum: ['LANGUAGES', 'FRAMEWORKS', 'TOOLS']
+      required: true
     },
     name: { type: String, required: true },
     level: { type: String, required: true },
@@ -18,7 +17,10 @@ const ProjectSchema = new mongoose.Schema({
   desc: { type: String, required: true },
   tech: { type: [String], required: true },
   year: { type: String, required: true },
-  image: { type: String }
+  image: { type: String },
+  sourceLink: {type: String},
+  liveLink: {type: String},
+  status: { type: String}
 });
 
 
