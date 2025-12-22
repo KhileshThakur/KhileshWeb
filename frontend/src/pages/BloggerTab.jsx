@@ -325,7 +325,6 @@ const RoadmapsView = ({ onSelect }) => {
 };
 
 /* --- MAIN COMPONENT --- */
-
 const BloggerTab = () => {
   const [activeTab, setActiveTab] = useState('feed'); 
   const [selectedArticle, setSelectedArticle] = useState(null);
@@ -382,17 +381,22 @@ const BloggerTab = () => {
           </div>
         </div>
 
-        {/* RIGHT: SIDEBAR */}
+        {/* RIGHT: SIDEBAR (Updated for Mobile Icons) */}
         <div className="sidebar">
           <div className="sidebar-header">
             <h3 className="sidebar-title">KNOWLEDGE BASE</h3>
           </div>
           <div className="nav-group">
+            
             <div 
               className={`nav-box-btn ${activeTab === 'feed' ? 'active' : ''}`}
               onClick={() => handleTabChange('feed')}
             >
+              {/* Desktop Background Icon */}
               <LucideIcons.FileText size={40} className="nav-icon-bg" />
+              {/* Mobile Centered Icon */}
+              <LucideIcons.FileText size={24} className="nav-icon-mobile" />
+              
               <span className="nav-label">Articles</span>
               <span className="nav-sub">Docs & Guides</span>
             </div>
@@ -402,6 +406,8 @@ const BloggerTab = () => {
               onClick={() => handleTabChange('roadmaps')}
             >
               <LucideIcons.Map size={40} className="nav-icon-bg" />
+              <LucideIcons.Map size={24} className="nav-icon-mobile" />
+              
               <span className="nav-label">Roadmaps</span>
               <span className="nav-sub">Learning Paths</span>
             </div>
@@ -411,11 +417,13 @@ const BloggerTab = () => {
               onClick={() => handleTabChange('snippets')}
             >
               <LucideIcons.Code size={40} className="nav-icon-bg" />
+              <LucideIcons.Code size={24} className="nav-icon-mobile" />
+              
               <span className="nav-label">Snippets</span>
               <span className="nav-sub">Code Atoms</span>
             </div>
-          </div>
 
+          </div>
           {/* Footer Stats */}
           <div className="sidebar-footer">
             <div className="stat-row">

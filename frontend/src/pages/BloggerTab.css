@@ -64,8 +64,8 @@
   display: flex;
   flex: 1;
   overflow: hidden;
-  padding: 2rem;
-  gap: 3rem;
+  padding: 1.5rem;
+  gap: 1.5rem;
 }
 
 /* --- SIDEBAR NAV --- */
@@ -158,6 +158,11 @@
   color: black;
 }
 
+/* --- ADDED: Hide Mobile Icon on Desktop --- */
+#blogger-page .nav-icon-mobile {
+  display: none;
+}
+
 #blogger-page .nav-label {
   font-size: 1.25rem;
   font-weight: 800;
@@ -213,12 +218,16 @@
 /* --- MAIN DISPLAY AREA --- */
 #blogger-page .main-display {
   flex: 1;
+  background: rgba(10, 5, 15, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: 12px;
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  border-left: 1px solid var(--border);
-  padding: 1rem;
+  box-shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.6);
 }
 
 #blogger-page .top-bar {
@@ -266,12 +275,11 @@
 }
 
 #blogger-page .viewport {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  position: relative;
-  padding-bottom: 3rem;
-  padding-right: 0.5rem;
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
 }
 
 /* --- SECTION HEADERS --- */
@@ -821,7 +829,8 @@
   line-height: 1.6;
 }
 
-/* --- RESPONSIVE --- */
+/* src/components/BloggerTab.css - Responsive Adjustment */
+
 @media (max-width: 900px) {
   #blogger-page.blogger-container {
     height: 100dvh;
@@ -829,29 +838,38 @@
   }
 
   #blogger-page .content-wrapper {
-    flex-direction: column-reverse;
+    flex-direction: column;
+    /* Stack: Content on top, Nav on bottom */
     padding: 0;
+    /* Remove desktop padding */
     gap: 0;
+    /* Remove desktop gap */
   }
 
+  #blogger-page .section-header {
+    justify-content: center;
+    text-align: center;
+  }
+
+  /* 1. Transform Sidebar to Bottom Tab Bar */
   #blogger-page .sidebar {
+    order: 2;
+    /* Force to bottom */
     width: 100%;
     height: auto;
     flex-direction: row;
     border-right: none;
     border-top: 1px solid var(--border);
-    padding: 0.5rem;
+    padding: 0;
     background: #030003;
     z-index: 50;
     flex-shrink: 0;
-    gap: 0.5rem;
-    padding-bottom: env(safe-area-inset-bottom, 0.5rem);
+    gap: 0;
+    /* Safe area for iPhone home bar */
+    padding-bottom: env(safe-area-inset-bottom, 10px);
   }
 
-  #blogger-page .sidebar-header {
-    display: none;
-  }
-
+  #blogger-page .sidebar-header,
   #blogger-page .sidebar-footer {
     display: none;
   }
@@ -860,14 +878,20 @@
     flex-direction: row;
     width: 100%;
     justify-content: space-between;
-    gap: 0.5rem;
+    gap: 0;
   }
 
   #blogger-page .nav-box-btn {
     flex: 1;
+    min-height: 60px;
     text-align: center;
     padding: 0.5rem;
+
+    /* RESET ALL BORDERS FIRST */
     border: none;
+    /* Create a transparent placeholder so the button doesn't jump when active */
+    border-top: 2px solid transparent;
+
     background: transparent;
     clip-path: none;
     display: flex;
@@ -875,19 +899,21 @@
     align-items: center;
     justify-content: center;
     gap: 4px;
-    min-height: auto;
-    border-radius: 8px;
+    border-radius: 0;
   }
 
   #blogger-page .nav-box-btn:hover {
-    background: transparent;
+    background: rgba(255, 255, 255, 0.02);
     transform: none;
   }
 
   #blogger-page .nav-box-btn.active {
-    background: rgb(244 114 182 / 86%);
-    border: none;
+    background: transparent;
     box-shadow: none;
+
+    /* FIX: Explicitly set the border-top again here to override any 'border: none' issues */
+    border: none;
+    border-top: 2px solid var(--accent);
   }
 
   #blogger-page .nav-icon-bg {
@@ -898,21 +924,41 @@
     display: none;
   }
 
-  #blogger-page .nav-label {
-    font-size: 0.65rem;
+  /* 3. Show Mobile Icons */
+  #blogger-page .nav-icon-mobile {
+    display: block;
+    color: var(--text-muted);
   }
 
+  #blogger-page .nav-box-btn.active .nav-icon-mobile {
+    color: var(--accent);
+  }
+
+  #blogger-page .nav-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+  }
+
+  #blogger-page .nav-box-btn.active .nav-label {
+    color: var(--accent);
+  }
+
+  /* 4. Main Display Area */
   #blogger-page .main-display {
+    order: 1;
+    /* Content on top */
     border-radius: 0;
     border: none;
     border-left: none;
-    padding-left: 0;
+    height: calc(100% - 70px);
+    padding: 0;
   }
 
   #blogger-page .viewport {
-    padding: 1rem 1rem 6rem 1rem;
+    padding: 1rem 1rem 3rem 1rem;
   }
 
+  /* 5. Mobile Layout Overrides */
   #blogger-page .grid-layout {
     grid-template-columns: 1fr;
     gap: 1.5rem;
@@ -934,10 +980,8 @@
   #blogger-page .vault-sidebar {
     width: 100%;
     max-height: 200px;
-    overflow-y: auto;
     border-right: none;
     border-bottom: 1px solid var(--border);
-    padding-right: 0;
   }
 
   #blogger-page .vault-search {

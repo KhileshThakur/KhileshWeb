@@ -545,109 +545,157 @@
 #designer-page ::-webkit-scrollbar-thumb:hover {
     background: var(--accent);
 }
+#designer-page .nav-icon-bg {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%) rotate(-10deg);
+  opacity: 0.2;
+  transition: all 0.3s;
+  z-index: 1;
+  color: var(--text-muted);
+}
 
-/* --- RESPONSIVE --- */
-@media (max-width: 700px) {
-    #designer-page.designer-container {
-        height: 100dvh;
-        overflow: hidden;
-    }
+#designer-page .nav-btn:hover .nav-icon-bg {
+  opacity: 0.4;
+  transform: translateY(-50%) rotate(0deg) scale(1.1);
+  color: var(--accent);
+}
 
-    #designer-page .content-wrapper {
-        flex-direction: column-reverse;
-        padding: 0;
-        gap: 0;
-    }
+#designer-page .nav-btn.active .nav-icon-bg {
+  opacity: 0.1;
+  color: #000;
+}
 
-    #designer-page .sidebar {
-        width: 100%;
-        height: auto;
-        flex-direction: row;
-        border-left: none;
-        border-top: 1px solid var(--border);
-        padding: 0.5rem;
-        background: #050208;
-        z-index: 50;
-        flex-shrink: 0;
-        gap: 0.25rem;
-        padding-bottom: env(safe-area-inset-bottom, 1rem);
-    }
+/* Hide Mobile Icon on Desktop */
+#designer-page .nav-icon-mobile {
+  display: none;
+}
 
-    #designer-page .nav-btn {
-        flex: 1;
-        text-align: center;
-        padding: 0.75rem;
-        border: none;
-        background: transparent;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 4px;
-    }
+@media (max-width: 900px) {
+  #designer-page.designer-container {
+    height: 100dvh;
+    overflow: hidden;
+  }
 
-    #designer-page .nav-btn.active {
-        background: var(--accent);
-        border-radius: 8px;
-        box-shadow: none;
-    }
+  #designer-page .content-wrapper {
+    flex-direction: column; /* Stack vertically */
+    padding: 0;
+    gap: 0;
+  }
 
-    #designer-page .nav-label {
-        font-size: 0.7rem;
-    }
+  /* 1. Transform Sidebar to Bottom Tab Bar */
+  #designer-page .sidebar {
+    order: 2; /* Force to bottom */
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    padding: 0;
+    background: #030005;
+    z-index: 50;
+    flex-shrink: 0;
+    gap: 0;
+    /* Safe area for iPhone home bar */
+    padding-bottom: env(safe-area-inset-bottom, 10px);
+  }
 
-    #designer-page .nav-icon-mobile {
-        display: block;
-        opacity: 0.7;
-    }
+  #designer-page .sidebar-footer {
+    display: none !important; /* Hide stats and headers */
+  }
 
-    #designer-page .nav-btn.active .nav-icon-mobile {
-        opacity: 1;
-        color: var(--accent);
-    }
+  /* 2. Mobile Nav Buttons */
+  #designer-page .nav-btn {
+    flex: 1;
+    min-height: 60px;
+    text-align: center;
+    padding: 0.5rem;
+    
+    /* Reset Borders */
+    border: none;
+    border-top: 2px solid transparent;
+    
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    border-radius: 0;
+  }
 
-    #designer-page .sidebar-footer {
-        display: none;
-    }
+  #designer-page .nav-btn:hover {
+    background: rgba(255, 255, 255, 0.02);
+    transform: none;
+    border-color: transparent;
+  }
 
-    #designer-page .main-display {
-        border-radius: 0;
-        border: none;
-    }
+  #designer-page .nav-btn.active {
+    background: transparent;
+    box-shadow: none;
+    color: var(--accent);
+    
+    /* Active Top Line */
+    border: none;
+    border-top: 2px solid var(--accent);
+  }
 
-    #designer-page .viewport {
-        padding: 1rem 1rem 5rem 1rem;
-    }
+  /* 3. Icon Handling */
+  #designer-page .nav-icon-bg {
+    display: none; /* Hide large bg icon */
+  }
 
-    #designer-page .gallery-header {
-        top: -1rem;
-        margin-top: -1rem;
-        width: calc(100% + 2rem);
-        margin-left: -1rem;
-        padding-left: 1rem;
-        padding-right: 1rem;
-    }
+  #designer-page .nav-icon-mobile {
+    display: block; /* Show mobile icon */
+    color: var(--text-muted);
+    margin-bottom: 2px;
+  }
 
-    #designer-page .gallery-grid {
-        grid-template-columns: 1fr;
-    }
+  #designer-page .nav-btn.active .nav-icon-mobile {
+    color: var(--accent);
+  }
 
-    #designer-page .tools-shelf {
-        padding: 1.5rem;
-        gap: 1rem;
-    }
+  #designer-page .nav-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    letter-spacing: 0;
+  }
 
-    #designer-page .tool-icon-wrapper {
-        width: 65px;
-        height: 65px;
-    }
+  #designer-page .nav-btn.active .nav-label {
+    color: var(--accent);
+  }
 
-    #designer-page .tool-tooltip {
-        bottom: -30px;
-        font-size: 0.65rem;
-    }
+  /* 4. Main Display Area */
+  #designer-page .main-display {
+    order: 1; /* Content on top */
+    border-radius: 0;
+    border: none;
+    /* Calculate height minus bottom bar */
+    height: calc(100% - 70px); 
+  }
 
-    #designer-page .studio-grid {
-        grid-template-columns: 1fr;
-    }
+  #designer-page .viewport {
+    padding: 1rem 1rem 3rem 1rem;
+  }
+  
+  /* Mobile Grid Adjustments */
+  #designer-page .gallery-header {
+    top: -1rem;
+    margin-top: -1rem;
+    width: calc(100% + 2rem);
+    margin-left: -1rem;
+    padding-left: 1rem;
+  }
+
+  #designer-page .gallery-grid,
+  #designer-page .studio-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  #designer-page .tools-shelf {
+    padding: 1.5rem;
+    gap: 1rem;
+  }
 }

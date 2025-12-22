@@ -15,7 +15,7 @@ import './CreatorTab.css';
 /* --- COMPONENTS --- */
 
 const SketchCard = ({ sketch, onClick }) => (
-  <motion.div 
+  <motion.div
     className="sketch-card"
     onClick={onClick}
     initial={{ opacity: 0, y: 20 }}
@@ -34,18 +34,20 @@ const SketchCard = ({ sketch, onClick }) => (
 
 const BookCard = ({ book }) => (
   <div className="book-showcase">
-    <div className="book-cover-3d">
-      <div className="book-front">
-        <img src={book.cover} alt={book.title} className="book-img" />
+    <div className="book-cover-container">
+      <div className="book-cover-3d">
+        <div className="book-front">
+          <img src={book.cover} alt={book.title} className="book-img" />
+        </div>
+        <div className="book-spine"></div>
       </div>
-      <div className="book-spine"></div>
     </div>
     <div className="book-details">
       <h2>{book.title}</h2>
       <div className="book-author">by {book.author}</div>
       <p className="book-desc">{book.desc}</p>
       <div className="book-actions">
-        <button className="read-btn"><LucideIcons.BookOpen size={18} /> Read Sample</button>
+        <button className="read-btn"><LucideIcons.BookOpen size={18} /> Sample</button>
         <button className="outline-btn"><LucideIcons.Share2 size={18} /> Share</button>
       </div>
     </div>
@@ -54,8 +56,10 @@ const BookCard = ({ book }) => (
 
 const VisionCard = ({ thought }) => (
   <div className="vision-card">
-    <div className="vision-date">{thought.date}</div>
-    <LucideIcons.Feather className="vision-icon" size={24} />
+    <div style={{display: 'flex', justifyContent: 'space-between'}}>
+      <div className="vision-date">{thought.date}</div>
+      <LucideIcons.Feather className="vision-icon" size={24} color='#22d3ee' />
+    </div>
     <p className="vision-text">"{thought.text}"</p>
   </div>
 );
@@ -74,13 +78,13 @@ const GalleryView = () => {
   if (error) return <div className="error-state">Failed to load sketches.</div>;
 
   return (
-    <div>
-      <div style={{marginBottom:'2rem', display:'flex', alignItems:'center', gap:'1rem'}}>
-        <h2 style={{fontSize:'2.5rem', fontWeight:800, margin:0, color:'white', lineHeight:1}}>Artworks</h2>
-        <span style={{height:'1px', flex:1, background:'var(--border)'}}></span>
-        <span style={{color:'var(--text-muted)', fontFamily:'monospace', fontSize:'0.8rem'}}>0{sketches.length} ITEMS</span>
+    <div className="view-container">
+      <div className="section-header">
+        <h2>Artworks</h2>
+        <span className="header-line"></span>
+        <span className="header-count">0{sketches.length} ITEMS</span>
       </div>
-      
+
       <div className="gallery-grid">
         {sketches.map((s, i) => (
           <SketchCard
@@ -93,70 +97,20 @@ const GalleryView = () => {
 
       <AnimatePresence>
         {selectedImg && (
-          <motion.div 
+          <motion.div
             className="modal-overlay"
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSelectedImg(null)}
-            // Inline styles to fix positioning issues
-            style={{
-              position: 'fixed',
-              top: 0, 
-              left: 0,
-              background: 'rgba(0, 0, 0, 0.9)',
-              backdropFilter: 'blur(10px)',
-              zIndex: 9999,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '2rem'
-            }}
           >
-            <div 
-              className="img-modal" 
-              onClick={e => e.stopPropagation()}
-              style={{ position: 'relative', maxWidth: '90%', maxHeight: '90%' }}
-            >
-              <button 
-                className="close-modal" 
-                onClick={() => setSelectedImg(null)}
-                style={{
-                  position: 'absolute',
-                  top: '-3rem',
-                  right: '-2rem',
-                  background: 'none',
-                  border: 'none',
-                  color: 'white',
-                  cursor: 'pointer',
-                  outline: 'none'
-                }}
-              >
-                <LucideIcons.X size={32} />
+            <div className="img-modal" onClick={e => e.stopPropagation()}>
+              <button className="close-modal" onClick={() => setSelectedImg(null)}>
+                <LucideIcons.X size={24} />
               </button>
-              
-              <img 
-                src={selectedImg.img} 
-                alt={selectedImg.title} 
-                style={{ 
-                  maxWidth: '100%', 
-                  maxHeight: '80vh', 
-                  borderRadius: '4px',
-                  boxShadow: '0 20px 50px rgba(0,0,0,0.5)' 
-                }} 
-              />
-              
-              <div
-                style={{
-                  textAlign:'center',
-                  marginTop:'1rem',
-                  fontFamily:'Caveat, cursive',
-                  fontSize:'2rem',
-                  color:'white'
-                }}
-              >
-                {selectedImg.title}
-              </div>
+
+              <img src={selectedImg.img} alt={selectedImg.title} />
+              <div className="modal-caption">{selectedImg.title}</div>
             </div>
           </motion.div>
         )}
@@ -176,9 +130,9 @@ const LibraryView = () => {
 
   return (
     <div className="library-layout">
-      <div style={{textAlign:'center', marginBottom:'1rem'}}>
-        <h2 style={{fontSize:'2.5rem', fontWeight:800, color:'white', marginBottom:'0.5rem'}}>Published Works</h2>
-        <p style={{color:'var(--text-muted)'}}>Stories penned in the quiet hours.</p>
+      <div className="section-header center">
+        <h2>Published Works</h2>
+        <p>Stories penned in the quiet hours.</p>
       </div>
       {books.map((b, i) => <BookCard key={b.id || b._id || i} book={b} />)}
     </div>
@@ -195,10 +149,10 @@ const VisionView = () => {
   if (error) return <div className="error-state">Failed to load thoughts.</div>;
 
   return (
-    <div>
-      <div style={{marginBottom:'2rem'}}>
-        <h2 style={{fontSize:'2.5rem', fontWeight:800, color:'white', margin:0}}>Journal</h2>
-        <p style={{color:'var(--text-muted)', marginTop:'0.5rem'}}>Fragments of a creative mind.</p>
+    <div className="view-container">
+      <div className="section-header">
+        <h2>Journal</h2>
+        <p>Fragments of a creative mind.</p>
       </div>
       <div className="vision-grid">
         {thoughts.map((t, i) => <VisionCard key={t.id || t._id || i} thought={t} />)}
@@ -217,18 +171,18 @@ const CreatorTab = () => {
   };
 
   const renderContent = () => {
-    switch(activeTab) {
+    switch (activeTab) {
       case 'artworks': return <GalleryView />;
-      case 'library':  return <LibraryView />;
-      case 'vision':   return <VisionView />;
-      default:         return <GalleryView />;
+      case 'library': return <LibraryView />;
+      case 'vision': return <VisionView />;
+      default: return <GalleryView />;
     }
   };
 
   return (
     <div id="creator-page" className="creator-container">
       <div className="content-wrapper">
-        
+
         {/* LEFT: CONTENT AREA */}
         <div className="main-display">
           <div className="top-bar">
@@ -238,9 +192,9 @@ const CreatorTab = () => {
             <div className="breadcrumbs">
               Studio <span>/</span> Creator <span>/</span> {activeTab}
             </div>
-            <div style={{display:'flex', gap:'0.5rem', marginLeft:'auto'}}>
-               <div style={{width:'8px', height:'8px', borderRadius:'50%', background:'var(--accent)'}}></div>
-               <div style={{width:'8px', height:'8px', borderRadius:'50%', background:'#333'}}></div>
+            <div className="status-dots">
+              <div className="dot active"></div>
+              <div className="dot"></div>
             </div>
           </div>
 
@@ -248,11 +202,11 @@ const CreatorTab = () => {
             <AnimatePresence mode='wait'>
               <motion.div
                 key={activeTab}
-                initial={{ opacity: 0, y: 10 }} 
-                animate={{ opacity: 1, y: 0 }} 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
-                style={{ height: '100%' }}
+                className="motion-wrapper"
               >
                 {renderContent()}
               </motion.div>
@@ -266,40 +220,44 @@ const CreatorTab = () => {
             <h3 className="sidebar-title">The Studio</h3>
           </div>
           <div className="nav-group">
-            
-            <div 
+
+            <div
               className={`nav-box-btn ${activeTab === 'artworks' ? 'active' : ''}`}
               onClick={() => handleTabChange('artworks')}
             >
+              {/* Desktop Decor */}
               <LucideIcons.PenTool size={40} className="nav-icon-bg" />
-              <LucideIcons.Brush size={24} className="nav-icon-mobile" />
+              {/* Mobile Icon */}
+              <LucideIcons.PenTool size={24} className="nav-icon-mobile" />
+
               <span className="nav-label">Sketches</span>
               <span className="nav-sub">Hand-Drawn Gallery</span>
             </div>
-            
-            <div 
+
+            <div
               className={`nav-box-btn ${activeTab === 'library' ? 'active' : ''}`}
               onClick={() => handleTabChange('library')}
             >
               <LucideIcons.BookOpen size={40} className="nav-icon-bg" />
-              <LucideIcons.Book size={24} className="nav-icon-mobile" />
+              <LucideIcons.BookOpen size={24} className="nav-icon-mobile" />
+
               <span className="nav-label">Writings</span>
               <span className="nav-sub">Books & Stories</span>
             </div>
-            
-            <div 
+
+            <div
               className={`nav-box-btn ${activeTab === 'vision' ? 'active' : ''}`}
               onClick={() => handleTabChange('vision')}
             >
               <LucideIcons.Eye size={40} className="nav-icon-bg" />
-              <LucideIcons.Sparkles size={24} className="nav-icon-mobile" />
+              <LucideIcons.Eye size={24} className="nav-icon-mobile" />
+
               <span className="nav-label">Vision</span>
               <span className="nav-sub">Creative Journal</span>
             </div>
 
           </div>
 
-          {/* Footer Stats */}
           <div className="sidebar-footer">
             <div className="stat-row">
               <span>INK: 85%</span>

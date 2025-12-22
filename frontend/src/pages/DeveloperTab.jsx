@@ -17,44 +17,30 @@ import {
   getDeveloperProjects,
   getDeveloperServices,
 } from "../api/public-api";
-
-/* --- 3. HELPER COMPONENTS --- */
-
-// A. DynamicIcon (Kept for UI & Services - Lucide)
 const DynamicIcon = ({ name, size = 24, className }) => {
   if (!name) return <LucideIcons.Terminal size={size} className={className} />;
-
   let IconComponent = LucideIcons[name];
-
   if (!IconComponent) {
     const pascalName = name.charAt(0).toUpperCase() + name.slice(1);
     IconComponent = LucideIcons[pascalName];
   }
-
   if (!IconComponent) {
     return <LucideIcons.Code2 size={size} className={className} />;
   }
-
   return <IconComponent size={size} className={className} />;
 };
 
-// B. SkillIcon (NEW: Specifically for Iconify in Skills section)
 const SkillIcon = ({ name, size = 24 }) => {
   if (!name) return <LucideIcons.Code2 size={size} />;
-
   return (
     <Icon 
       icon={name} 
       width={size} 
       height={size} 
-      onError={(e) => {
-        e.target.style.display = 'none';
-      }}
+      onError={(e) => { e.target.style.display = 'none'; }}
     />
   );
 };
-
-/* --- COMPONENTS --- */
 
 const SkillModule = ({ name, iconName, level, xp }) => (
   <motion.div
@@ -71,7 +57,6 @@ const SkillModule = ({ name, iconName, level, xp }) => (
       <div className="module-title">{name}</div>
       <div className="xp-badge">{xp}</div>
     </div>
-
     <div>
       <div className="proficiency-bar">
         {[1, 2, 3, 4, 5].map((i) => (
@@ -84,7 +69,6 @@ const SkillModule = ({ name, iconName, level, xp }) => (
 
 const SkillsView = () => {
   const [activeCat, setActiveCat] = useState("LANGUAGES");
-
   const { data, isLoading, error } = useQuery({
     queryKey: ["developer-skills"],
     queryFn: getDeveloperSkills,
@@ -118,7 +102,6 @@ const SkillsView = () => {
           </button>
         ))}
       </div>
-
       <motion.div
         key={active}
         className="arsenal-grid"
@@ -148,7 +131,6 @@ const ServicesView = () => {
   });
 
   const services = data || [];
-
   if (isLoading) return <div className="services-grid"><LucideIcons.Loader2 className="animate-spin" /> Loading services...</div>;
   if (error) return <div className="services-grid">Failed to load services.</div>;
   if (services.length === 0) return <div className="services-grid">No services found.</div>;
@@ -166,17 +148,13 @@ const ServicesView = () => {
           <div className="service-icon-box">
             <DynamicIcon name={service.icon} size={24} />
           </div>
-
           <div className="service-content">
             <h3>{service.title}</h3>
             <p>{service.desc}</p>
           </div>
-
           <div className="service-tags">
             {service.tags?.map((tag) => (
-              <span key={tag} className="service-pill">
-                {tag}
-              </span>
+              <span key={tag} className="service-pill">{tag}</span>
             ))}
           </div>
         </motion.div>
@@ -185,7 +163,6 @@ const ServicesView = () => {
   );
 };
 
-/* --- UPDATED WORKVIEW SECTION --- */
 const WorkView = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["developer-projects"],
@@ -218,29 +195,14 @@ const WorkView = () => {
         {projects.map((project, index) => (
           <div
             key={project._id || index}
-            className={`project-item ${
-              activeProject._id === project._id ? "active" : ""
-            }`}
+            className={`project-item ${activeProject._id === project._id ? "active" : ""}`}
             onClick={() => setActiveProject(project)}
           >
             <div>
-              <div
-                style={{
-                  fontSize: "0.7rem",
-                  color: "#666",
-                  marginBottom: "0.25rem",
-                  fontFamily: "monospace",
-                }}
-              >
+              <div style={{ fontSize: "0.7rem", color: "#666", marginBottom: "0.25rem", fontFamily: "monospace" }}>
                 PRJ_0{index + 1}
               </div>
-              <div
-                style={{
-                  fontWeight: 600,
-                  color:
-                    activeProject._id === project._id ? "white" : "#aaa",
-                }}
-              >
+              <div style={{ fontWeight: 600, color: activeProject._id === project._id ? "white" : "#aaa" }}>
                 {project.title}
               </div>
             </div>
@@ -249,10 +211,7 @@ const WorkView = () => {
                 size={16}
                 style={{
                   opacity: activeProject._id === project._id ? 1 : 0.3,
-                  color:
-                    activeProject._id === project._id
-                      ? "var(--accent)"
-                      : "inherit",
+                  color: activeProject._id === project._id ? "var(--accent)" : "inherit",
                 }}
               />
             </div>
@@ -273,161 +232,49 @@ const WorkView = () => {
           >
             <div className="detail-img">
               <img src={activeProject.image} alt={activeProject.title} />
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  backgroundImage:
-                    "linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)",
-                  backgroundSize: "20px 20px",
-                  pointerEvents: "none",
-                }}
-              ></div>
+              <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)", backgroundSize: "20px 20px", pointerEvents: "none" }}></div>
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.5rem",
-                marginBottom: "1.5rem",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "flex-start",
-                }}
-              >
-                <h2
-                  style={{
-                    fontSize: "clamp(1.5rem, 4vw, 2.5rem)",
-                    margin: 0,
-                    fontWeight: 700,
-                    lineHeight: 1.1,
-                    letterSpacing: "-0.02em",
-                  }}
-                >
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", marginBottom: "1.5rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                <h2 style={{ fontSize: "clamp(1.5rem, 4vw, 2.5rem)", margin: 0, fontWeight: 700, lineHeight: 1.1, letterSpacing: "-0.02em" }}>
                   {activeProject.title}
                 </h2>
-                <span
-                  style={{
-                    fontFamily: "monospace",
-                    color: "var(--accent)",
-                    border: "1px solid var(--accent)",
-                    padding: "4px 8px",
-                    fontSize: "0.8rem",
-                    borderRadius: "4px",
-                    whiteSpace: "nowrap",
-                  }}
-                >
+                <span style={{ fontFamily: "monospace", color: "var(--accent)", border: "1px solid var(--accent)", padding: "4px 8px", fontSize: "0.8rem", borderRadius: "4px", whiteSpace: "nowrap" }}>
                   {activeProject.year}
                 </span>
               </div>
-              <p
-                style={{
-                  fontFamily: "monospace",
-                  fontSize: "0.8rem",
-                  color: "#666",
-                }}
-              >
+              <p style={{ fontFamily: "monospace", fontSize: "0.8rem", color: "#666" }}>
                 // Status: {activeProject.status}
               </p>
             </div>
 
             <div style={{ marginBottom: "2rem" }}>
               {activeProject.tech?.map((t) => (
-                <span key={t} className="tech-tag">
-                  {t}
-                </span>
+                <span key={t} className="tech-tag">{t}</span>
               ))}
             </div>
 
-            <p
-              style={{
-                color: "#ccc",
-                lineHeight: 1.7,
-                marginBottom: "3rem",
-                maxWidth: "650px",
-                fontSize: "1rem",
-              }}
-            >
+            <p style={{ color: "#ccc", lineHeight: 1.7, marginBottom: "3rem", maxWidth: "650px", fontSize: "1rem" }}>
               {activeProject.desc}
             </p>
 
-            {/* --- UPDATED BUTTONS SECTION --- */}
-            <div
-              style={{
-                display: "flex",
-                gap: "1rem",
-                marginTop: "auto",
-                flexWrap: "wrap",
-              }}
-            >
-              {/* 1. Live Demo Button - mapped to liveLink */}
+            <div style={{ display: "flex", gap: "1rem", marginTop: "auto", flexWrap: "wrap" }}>
               {activeProject.liveLink && (
-                <a
-                  href={activeProject.liveLink}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ textDecoration: "none" }}
-                >
-                  <button
-                    style={{
-                      background: "var(--accent)",
-                      color: "#000",
-                      border: "none",
-                      borderRadius: "4px",
-                      padding: "0.8rem 1.6rem",
-                      fontWeight: "bold",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.5rem",
-                      cursor: "pointer",
-                      transition: "transform 0.2s",
-                    }}
-                    onMouseOver={(e) =>
-                      (e.currentTarget.style.transform = "translateY(-2px)")
-                    }
-                    onMouseOut={(e) =>
-                      (e.currentTarget.style.transform = "translateY(0)")
-                    }
+                <a href={activeProject.liveLink} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
+                  <button style={{ background: "var(--accent)", color: "#000", border: "none", borderRadius: "4px", padding: "0.8rem 1.6rem", fontWeight: "bold", display: "flex", alignItems: "center", gap: "0.5rem", cursor: "pointer", transition: "transform 0.2s" }}
+                    onMouseOver={(e) => (e.currentTarget.style.transform = "translateY(-2px)")}
+                    onMouseOut={(e) => (e.currentTarget.style.transform = "translateY(0)")}
                   >
                     <LucideIcons.ExternalLink size={18} /> Live Demo
                   </button>
                 </a>
               )}
-
-              {/* 2. Source Code Button - mapped to sourceLink */}
               {activeProject.sourceLink && (
-                <a
-                  href={activeProject.sourceLink}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ textDecoration: "none" }}
-                >
-                  <button
-                    style={{
-                      background: "transparent",
-                      color: "var(--text-main)",
-                      border: "1px solid #333",
-                      borderRadius: "4px",
-                      padding: "0.8rem 1.6rem",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.5rem",
-                      cursor: "pointer",
-                      transition: "all 0.2s",
-                    }}
-                    onMouseOver={(e) => {
-                      e.currentTarget.style.borderColor = "var(--text-main)";
-                      e.currentTarget.style.transform = "translateY(-2px)";
-                    }}
-                    onMouseOut={(e) => {
-                      e.currentTarget.style.borderColor = "#333";
-                      e.currentTarget.style.transform = "translateY(0)";
-                    }}
+                <a href={activeProject.sourceLink} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
+                  <button style={{ background: "transparent", color: "var(--text-main)", border: "1px solid #333", borderRadius: "4px", padding: "0.8rem 1.6rem", display: "flex", alignItems: "center", gap: "0.5rem", cursor: "pointer", transition: "all 0.2s" }}
+                    onMouseOver={(e) => { e.currentTarget.style.borderColor = "var(--text-main)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+                    onMouseOut={(e) => { e.currentTarget.style.borderColor = "#333"; e.currentTarget.style.transform = "translateY(0)"; }}
                   >
                     <LucideIcons.Github size={18} /> Source Code
                   </button>
@@ -448,14 +295,10 @@ const DeveloperTab = () => {
 
   const renderContent = () => {
     switch (activeTab) {
-      case "work":
-        return <WorkView />;
-      case "skills":
-        return <SkillsView />;
-      case "services":
-        return <ServicesView />;
-      default:
-        return <WorkView />;
+      case "work": return <WorkView />;
+      case "skills": return <SkillsView />;
+      case "services": return <ServicesView />;
+      default: return <WorkView />;
     }
   };
 
@@ -474,14 +317,7 @@ const DeveloperTab = () => {
             <div className="breadcrumbs">
               System <span>/</span> Developer <span>/</span> {activeTab}
             </div>
-
-            <div
-              style={{
-                marginLeft: "auto",
-                display: "flex",
-                gap: "0.5rem",
-              }}
-            >
+            <div style={{ marginLeft: "auto", display: "flex", gap: "0.5rem" }}>
               <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#ff5f56" }} />
               <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#ffbd2e" }} />
               <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#27c93f" }} />
@@ -508,16 +344,7 @@ const DeveloperTab = () => {
         {/* RIGHT: NAVIGATION SIDEBAR */}
         <div className="sidebar">
           <div className="sidebar-footer" style={{ marginBottom: "1rem" }}>
-            <h3
-              style={{
-                margin: 0,
-                fontSize: "0.75rem",
-                color: "#666",
-                textTransform: "uppercase",
-                letterSpacing: "2px",
-                paddingLeft: "0.5rem",
-              }}
-            >
+            <h3 style={{ margin: 0, fontSize: "0.75rem", color: "#666", textTransform: "uppercase", letterSpacing: "2px", paddingLeft: "0.5rem" }}>
               Interface
             </h3>
           </div>
@@ -526,32 +353,13 @@ const DeveloperTab = () => {
             className={`nav-btn ${activeTab === "work" ? "active" : ""}`}
             onClick={() => setActiveTab("work")}
           >
-            {activeTab === "work" && (
-              <LucideIcons.Cpu
-                style={{
-                  position: "absolute",
-                  left: "10px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  opacity: 0.2,
-                }}
-                size={40}
-              />
-            )}
-            <LucideIcons.Monitor
-              size={24}
-              className="mobile-icon"
-              style={{ display: "none" }}
-            />
+            {/* Desktop Bg Icon */}
+            <LucideIcons.Cpu size={40} className="nav-icon-bg" />
+            {/* Mobile Icon */}
+            <LucideIcons.Monitor size={24} className="nav-icon-mobile" />
+            
             <div className="nav-label">Work</div>
-            <div
-              style={{
-                fontSize: "0.7rem",
-                opacity: 0.7,
-                marginTop: "4px",
-              }}
-              className="sidebar-footer"
-            >
+            <div className="sidebar-footer" style={{ fontSize: "0.7rem", opacity: 0.7, marginTop: "4px" }}>
               Projects & Code
             </div>
           </div>
@@ -560,32 +368,11 @@ const DeveloperTab = () => {
             className={`nav-btn ${activeTab === "skills" ? "active" : ""}`}
             onClick={() => setActiveTab("skills")}
           >
-            {activeTab === "skills" && (
-              <LucideIcons.Terminal
-                style={{
-                  position: "absolute",
-                  left: "10px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  opacity: 0.2,
-                }}
-                size={40}
-              />
-            )}
-            <LucideIcons.Zap
-              size={24}
-              className="mobile-icon"
-              style={{ display: "none" }}
-            />
+            <LucideIcons.Terminal size={40} className="nav-icon-bg" />
+            <LucideIcons.Zap size={24} className="nav-icon-mobile" />
+            
             <div className="nav-label">Skills</div>
-            <div
-              style={{
-                fontSize: "0.7rem",
-                opacity: 0.7,
-                marginTop: "4px",
-              }}
-              className="sidebar-footer"
-            >
+            <div className="sidebar-footer" style={{ fontSize: "0.7rem", opacity: 0.7, marginTop: "4px" }}>
               Stack & Tools
             </div>
           </div>
@@ -594,71 +381,25 @@ const DeveloperTab = () => {
             className={`nav-btn ${activeTab === "services" ? "active" : ""}`}
             onClick={() => setActiveTab("services")}
           >
-            {activeTab === "services" && (
-              <LucideIcons.Server
-                style={{
-                  position: "absolute",
-                  left: "10px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  opacity: 0.2,
-                }}
-                size={40}
-              />
-            )}
-            <LucideIcons.Network
-              size={24}
-              className="mobile-icon"
-              style={{ display: "none" }}
-            />
+            <LucideIcons.Server size={40} className="nav-icon-bg" />
+            <LucideIcons.Network size={24} className="nav-icon-mobile" />
+            
             <div className="nav-label">Services</div>
-            <div
-              style={{
-                fontSize: "0.7rem",
-                opacity: 0.7,
-                marginTop: "4px",
-              }}
-              className="sidebar-footer"
-            >
+            <div className="sidebar-footer" style={{ fontSize: "0.7rem", opacity: 0.7, marginTop: "4px" }}>
               Offerings
             </div>
           </div>
 
-          <div
-            className="sidebar-footer"
-            style={{
-              marginTop: "auto",
-              padding: "1rem",
-              borderTop: "1px solid var(--border)",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                fontSize: "0.7rem",
-                color: "#666",
-                fontFamily: "monospace",
-              }}
-            >
+          <div className="sidebar-footer" style={{ marginTop: "auto", padding: "1rem", borderTop: "1px solid var(--border)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.7rem", color: "#666", fontFamily: "monospace" }}>
               <span>MEM: 64GB</span>
               <span>CPU: 12%</span>
             </div>
-            <div
-              style={{
-                width: "100%",
-                height: "2px",
-                background: "#222",
-                marginTop: "6px",
-              }}
-            >
+            <div style={{ width: "100%", height: "2px", background: "#222", marginTop: "6px" }}>
               <motion.div
                 animate={{ width: ["12%", "40%", "25%"] }}
                 transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
-                style={{
-                  height: "100%",
-                  background: "var(--accent)",
-                }}
+                style={{ height: "100%", background: "var(--accent)" }}
               />
             </div>
           </div>

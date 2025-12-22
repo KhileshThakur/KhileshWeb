@@ -120,6 +120,23 @@ const SCHEMAS = {
       { key: "level", label: "Proficiency", type: "text" }
     ]
   },
+  designServices: {
+    group: "Designer",
+    title: "Services",
+    icon: "Layers",
+    fetchFn: PublicApi.getDesignerServices,
+    apiResource: api.designer.services,
+    columns: [
+      { key: "title", label: "Title" },
+      { key: "icon", label: "Icon" },
+    ],
+    fields: [
+      { key: "title", label: "Title", type: "text" },
+      { key: "icon", label: "Icon Name", type: "text" },
+      { key: "desc", label: "Description", type: "textarea" },
+      { key: "items", label: "Items", type: "array" },
+    ]
+  },
   books: {
     group: "Creator",
     title: "Books",
@@ -132,6 +149,35 @@ const SCHEMAS = {
       { key: "author", label: "Author", type: "text" },
       { key: "desc", label: "Description", type: "textarea" },
       { key: "cover", label: "Cover URL", type: "text" },
+    ]
+  },
+  sketches: {
+    group: "Creator",
+    title: "Sketches",
+    icon: "Image",
+    fetchFn: PublicApi.getCreatorSketches,
+    apiResource: api.creator.sketches,
+    columns: [
+      { key: "img", label: "Image", format: renderImage },
+      { key: "title", label: "Title" },
+      { key: "date", label: "Date" },
+    ],
+    fields: [
+      { key: "title", label: "Title", type: "text" },
+      { key: "date", label: "Date", type: "text" },
+      { key: "img", label: "Image URL", type: "text" },
+    ]
+  },
+  vision: {
+    group: "Creator",
+    title: "Thoughts",
+    icon: "MessageCircle",
+    fetchFn: PublicApi.getCreatorThoughts,
+    apiResource: api.creator.thoughts,
+    columns: [{ key: "date", label: "Date" }, { key: "text", label: "Text" }],
+    fields: [
+      { key: "date", label: "Date", type: "text" },
+      { key: "text", label: "Text", type: "textarea" },
     ]
   },
   articles: {

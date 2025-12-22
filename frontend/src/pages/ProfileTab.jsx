@@ -166,8 +166,10 @@ const ProfileTab = () => {
                 {focus.items.map((f, i) => (
                   <div key={i} className="focus-row">
                     <span className="status-dot"></span>
-                    <span className="focus-name">{f.name}</span>
-                    <span className="focus-badge">{f.status}</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', width: '100%' }}>
+                      <span className="focus-name">{f.name}</span>
+                      <span className="focus-badge">{f.status}</span>
+                    </div>
                   </div>
                 ))}
               </div>
