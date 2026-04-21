@@ -79,6 +79,7 @@ const SCHEMAS = {
       { key: "year", label: "Year", type: "text" },
       { key: "status", label: "Status", type: "text" },
       { key: "liveLink", label: "Link", type: "text" },
+      { key: "sourceLink", label: "Source Code Link", type: "text" }
     ]
   },
   devServices: {
