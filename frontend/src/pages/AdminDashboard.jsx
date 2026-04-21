@@ -78,7 +78,7 @@ const SCHEMAS = {
       { key: "tech", label: "Tech Stack (CSV)", type: "array" },
       { key: "year", label: "Year", type: "text" },
       { key: "status", label: "Status", type: "text" },
-      { key: "link", label: "Link", type: "text" },
+      { key: "liveLink", label: "Link", type: "text" },
     ]
   },
   devServices: {
