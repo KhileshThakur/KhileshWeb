@@ -76,6 +76,7 @@ const SCHEMAS = {
       { key: "desc", label: "Description", type: "textarea" },
       { key: "image", label: "Image URL", type: "text" },
       { key: "tech", label: "Tech Stack (CSV)", type: "array" },
+      { key: "year", label: "Year", type: "text" },
       { key: "link", label: "Link", type: "text" },
     ]
   },
