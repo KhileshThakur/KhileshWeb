@@ -1,17 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { motion, useScroll, useTransform, useSpring, useMotionValue, useMotionTemplate } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
 import {
-  ArrowUpRight, Code2, Palette, Terminal, Cpu, Zap,
-  Github, Linkedin, Instagram, Globe,
-  Music, Battery, Wifi, Lock, User, Mail, LayoutDashboard,
-  LayoutGrid, Share2, Plus, MapPin, Cloud, Play, FileText
+  ArrowUpRight, Code2, Palette, Terminal, Zap,
+  Github, Linkedin,
+  Battery, Wifi, Lock, Mail, LayoutDashboard,
+  Share2, Plus, MapPin, Cloud, Play
 } from 'lucide-react';
 
 import * as PublicApi from '../api/public-api';
-import ProfileImg from '../assets/Profile.png'; 
-import './Hero.css'
+import ProfileImg from '../assets/Profile.png';
+import useSound from '../hooks/useSound';   // 👈 import the hook
+import './Hero.css';
 
 /* --- UTILS --- */
 
@@ -22,7 +23,7 @@ const DecryptText = ({ text, className }) => {
   const scramble = () => {
     let iteration = 0;
     const interval = setInterval(() => {
-      setDisplayText(prev =>
+      setDisplayText(
         text.split("").map((letter, index) => {
           if (index < iteration) return text[index];
           return chars[Math.floor(Math.random() * chars.length)];
@@ -54,9 +55,7 @@ const Clock = () => {
       <p className="clock-date font-mono uppercase">
         {time.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' })}
       </p>
-      <p className="clock-date font-mono uppercase">
-        WORKSTATION
-      </p>
+      <p className="clock-date font-mono uppercase">WORKSTATION</p>
     </div>
   );
 };
@@ -86,32 +85,33 @@ const LockScreen = () => {
 
       <div className="relative w-full flex justify-center">
         <Clock />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] opacity-[0.05] pointer-events-none"
-          style={{ backgroundColor: '#1DCD9F', filter: 'blur(120px)', borderRadius: '9999px' }} />
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] opacity-[0.05] pointer-events-none"
+          style={{ backgroundColor: '#1DCD9F', filter: 'blur(120px)', borderRadius: '9999px' }}
+        />
       </div>
 
       <motion.div
         animate={{ y: [0, 10, 0] }}
         transition={{ repeat: Infinity, duration: 2 }}
-        className="flex flex-col items-center gap-2"
+        className="flex flex-col items-center gap-2 cursor-pointer"
+        onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
       >
         <div className="swipe-line" />
-        <p className="swipe-text font-mono uppercase animate-pulse">Swipe Up to Unlock</p>
+        <p className="swipe-text font-mono uppercase animate-pulse">Click to Unlock</p>
       </motion.div>
     </motion.div>
   );
 };
 
-const BentoCard = ({ children, className = "", color = "#1DCD9F", onClick, delay = 0 }) => {
+const BentoCard = ({ children, className = "", color = "#1DCD9F", onClick, delay = 0, onHover }) => {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
   const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-    const xPct = (e.clientX - rect.left) / width - 0.5;
-    const yPct = (e.clientY - rect.top) / height - 0.5;
+    const xPct = (e.clientX - rect.left) / rect.width - 0.5;
+    const yPct = (e.clientY - rect.top) / rect.height - 0.5;
     x.set(yPct * 5);
     y.set(xPct * -5);
   };
@@ -125,7 +125,7 @@ const BentoCard = ({ children, className = "", color = "#1DCD9F", onClick, delay
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: delay, ease: "easeOut" }}
+      transition={{ duration: 0.5, delay, ease: "easeOut" }}
       viewport={{ once: true }}
       style={{
         rotateX: useSpring(x, { stiffness: 200, damping: 20 }),
@@ -134,6 +134,7 @@ const BentoCard = ({ children, className = "", color = "#1DCD9F", onClick, delay
       }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onPointerEnter={onHover}
       onClick={onClick}
       className={`bento-card group ${className}`}
     >
@@ -149,10 +150,10 @@ const BentoCard = ({ children, className = "", color = "#1DCD9F", onClick, delay
         <div className="grid-bg-mask"></div>
       </div>
 
-      <div className="border-glow" style={{ color: color }} />
+      <div className="border-glow" style={{ color }} />
 
       <div className="corner-plus">
-        <Plus size={10} style={{ color: color }} />
+        <Plus size={10} style={{ color }} />
       </div>
 
       <div className="relative z-10 h-full w-full">
@@ -165,7 +166,7 @@ const BentoCard = ({ children, className = "", color = "#1DCD9F", onClick, delay
 const MenuItem = ({ title, icon: Icon, sub, color, children }) => (
   <div className="menu-item">
     <div className="flex justify-between items-start">
-      <div className="icon-box" style={{ color: color }}>
+      <div className="icon-box" style={{ color }}>
         <div className="icon-bg-fill" style={{ backgroundColor: color }}></div>
         <Icon size={24} strokeWidth={2} className="relative z-10" />
       </div>
@@ -183,7 +184,7 @@ const MenuItem = ({ title, icon: Icon, sub, color, children }) => (
         <DecryptText text={title} />
       </h3>
       <div className="menu-sub">
-        <div className="progress-bar" style={{ color: color }}></div>
+        <div className="progress-bar" style={{ color }}></div>
         <p className="sub-text font-mono uppercase tracking-wider">{sub}</p>
       </div>
     </div>
@@ -192,6 +193,11 @@ const MenuItem = ({ title, icon: Icon, sub, color, children }) => (
 
 const Dashboard = () => {
   const navigate = useNavigate();
+
+  // --- Sounds (add more anytime) ---
+  const { play: playHover } = useSound("/beep.mp3", 1);
+  // const { play: playClick } = useSound("/click.mp3", 1);
+  // const { play: playSuccess } = useSound("/success.mp3", 0.2);
 
   const { data: profileData } = useQuery({
     queryKey: ['profile'],
@@ -239,6 +245,7 @@ const Dashboard = () => {
         {/* 1. PROFILE CARD */}
         <BentoCard
           onClick={() => navigate('/profile')}
+          onHover={playHover}
           color="#dcb313"
           delay={0.1}
           className="col-span-2 row-span-3 flex flex-col p-0 cursor-pointer"
@@ -267,13 +274,12 @@ const Dashboard = () => {
               </p>
             </div>
 
-            {/* UPDATED Action Bar: Removed Bio, Added Resume Link */}
             <div className="profile-actions">
               <div className="flex gap-4">
-                <button 
+                <button
                   className="action-btn uppercase"
                   onClick={(e) => {
-                    e.stopPropagation(); // Prevent card click
+                    e.stopPropagation();
                     if (resume.href && resume.href !== '#') {
                       window.open(resume.href, '_blank');
                     }
@@ -287,7 +293,7 @@ const Dashboard = () => {
         </BentoCard>
 
         {/* 2. DEVELOPER */}
-        <BentoCard onClick={() => navigate('/developer')} color="#1DCD9F" delay={0.2} className="col-span-2 row-span-1">
+        <BentoCard onClick={() => navigate('/developer')} onHover={playHover} color="#1DCD9F" delay={0.2} className="col-span-2 row-span-1">
           <MenuItem title="Developer" icon={Code2} sub="Work • Skills • Services" color="#1DCD9F">
             <div className="flex flex-col gap-1 w-full" style={{ opacity: 0.3 }}>
               <div style={{ height: '4px', width: '60%', backgroundColor: '#1DCD9F', borderRadius: '9999px' }}></div>
@@ -298,7 +304,7 @@ const Dashboard = () => {
         </BentoCard>
 
         {/* 3. DESIGNER */}
-        <BentoCard onClick={() => navigate('/designer')} color="#C084FC" delay={0.3} className="col-span-2 row-span-1">
+        <BentoCard onClick={() => navigate('/designer')} onHover={playHover} color="#C084FC" delay={0.3} className="col-span-2 row-span-1">
           <MenuItem title="Designer" icon={Palette} sub="Gallery • Tools • Studio" color="#C084FC">
             <div className="flex gap-2">
               <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#C084FC' }}></div>
@@ -310,7 +316,7 @@ const Dashboard = () => {
         </BentoCard>
 
         {/* 4. BLOGGER */}
-        <BentoCard onClick={() => navigate('/blogger')} color="#F472B6" delay={0.4} className="col-span-2 row-span-1">
+        <BentoCard onClick={() => navigate('/blogger')} onHover={playHover} color="#F472B6" delay={0.4} className="col-span-2 row-span-1">
           <MenuItem title="Blogger" icon={Terminal} sub="Articles • Roadmaps • Snippets" color="#F472B6">
             <div className="font-mono" style={{ fontSize: '8px', color: '#F472B6', opacity: 0.5, lineHeight: 1.2 }}>
               {'>'} git commit -m "update"<br />
@@ -321,7 +327,7 @@ const Dashboard = () => {
         </BentoCard>
 
         {/* 5. CREATOR */}
-        <BentoCard onClick={() => navigate('/creator')} color="#22d3ee" delay={0.5} className="col-span-2 row-span-1">
+        <BentoCard onClick={() => navigate('/creator')} onHover={playHover} color="#22d3ee" delay={0.5} className="col-span-2 row-span-1">
           <MenuItem title="Creator" icon={Zap} sub="Sketches • Writtings • Vision" color="#22d3ee">
             <div className="flex items-center gap-2">
               <div style={{ width: '1.5rem', height: '1.5rem', borderRadius: '50%', border: '1px solid #22d3ee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -333,7 +339,7 @@ const Dashboard = () => {
         </BentoCard>
 
         {/* 6. GMAIL */}
-        <BentoCard onClick={() => window.location.href = 'mailto:omthakur6640@gmail.com'} color="#ff7e29ff" delay={0.6} className="col-span-1 row-span-1 group">
+        <BentoCard onClick={() => window.location.href = 'mailto:omthakur6640@gmail.com'} onHover={playHover} color="#ff7e29ff" delay={0.6} className="col-span-1 row-span-1 group">
           <div className="menu-item">
             <div className="flex justify-between items-start">
               <div style={{ padding: '0.75rem', backgroundColor: '#1a1a1aff', borderRadius: '0.5rem', color: '#b04701ff' }}>
@@ -349,7 +355,7 @@ const Dashboard = () => {
         </BentoCard>
 
         {/* 7. LINKEDIN */}
-        <BentoCard onClick={() => window.open('https://www.linkedin.com/in/khilesh-thakur-a09865228', '_blank')} color="#0077b5" delay={0.7} className="col-span-1 row-span-1 group">
+        <BentoCard onClick={() => window.open('https://www.linkedin.com/in/khilesh-thakur-a09865228', '_blank')} onHover={playHover} color="#0077b5" delay={0.7} className="col-span-1 row-span-1 group">
           <div className="menu-item">
             <div className="flex justify-between items-start">
               <div style={{ padding: '0.75rem', backgroundColor: 'rgba(0, 119, 181, 0.1)', borderRadius: '0.5rem', color: '#0077b5' }}>
@@ -365,7 +371,7 @@ const Dashboard = () => {
         </BentoCard>
 
         {/* 8. GITHUB */}
-        <BentoCard onClick={() => window.open('https://github.com/KhileshThakur', '_blank')} color="#ffffff" delay={0.8} className="col-span-1 row-span-1 group">
+        <BentoCard onClick={() => window.open('https://github.com/KhileshThakur', '_blank')} onHover={playHover} color="#ffffff" delay={0.8} className="col-span-1 row-span-1 group">
           <div className="menu-item">
             <div className="flex justify-between items-start">
               <div style={{ padding: '0.75rem', backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: '0.5rem', color: 'white' }}>
@@ -381,16 +387,17 @@ const Dashboard = () => {
         </BentoCard>
 
         {/* 9. ADMIN OS */}
-        <BentoCard 
-          color="#FACC15" 
-          delay={0.9} 
+        <BentoCard
+          color="#FACC15"
+          delay={0.9}
           onClick={() => navigate('/admin')}
+          onHover={playHover}
           className="col-span-1 row-span-1 p-6 flex flex-col justify-between overflow-hidden cursor-pointer hover:bg-white/5 transition-colors group"
         >
           <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between', position: 'relative', zIndex: 10 }}>
             <div className="flex justify-between items-start z-10">
               <div className="flex items-center gap-2">
-                <LayoutDashboard size={20} color="#FACC15" /> 
+                <LayoutDashboard size={20} color="#FACC15" />
                 <span className="text-xs font-bold tracking-wider" style={{ color: '#FACC15' }}>adminOS</span>
               </div>
               <div className="flex gap-1">
